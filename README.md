@@ -1,1 +1,1 @@
-# CapstoneCs467
+# CapstoneCS467
