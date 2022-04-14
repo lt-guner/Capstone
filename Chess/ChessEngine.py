@@ -28,9 +28,9 @@ class ChessGame:
         self.white_move = True
         self.move_log = []
         self.captured_pieces = []
-        self.pieces = {'wP': "White Pawn", 'wR': 'White Rook', 'wN': 'White Night', 'wB': 'White Bishop',
+        self.pieces = {'wP': "White Pawn", 'wR': 'White Rook', 'wN': 'White Knight', 'wB': 'White Bishop',
                        'wQ': 'White Queen', 'wK': 'White King', 'bP': "Black Pawn", 'bR': 'Black Rook',
-                       'bN': 'Black Night', 'bB': 'Black Bishop', 'bQ': 'Black Queen', 'bK': 'Black King'}
+                       'bN': 'Black Knight', 'bB': 'Black Bishop', 'bQ': 'Black Queen', 'bK': 'Black King'}
         self.columns = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H'}
         self.rows = {0: '8', 1: '7', 2: '6', 3: '5', 4: '4', 5: '3', 6: '2', 7: '1'}
 
