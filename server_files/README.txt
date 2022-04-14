@@ -19,6 +19,7 @@ things to consider or handle later:
 
 
 CURRENT TEST_GAME.PY SETUP:
+- don't forget to change the ip address of the server variable to your own
 - run server
 
 - run first client (player 0, white)
