@@ -4,6 +4,7 @@ from client_network import Network
 WAITING_FOR_OPPONENT = 'Waiting for opponent'
 WAITING_FOR_TURN = 'Waiting for turn'
 ERROR = 'Error'
+OPPONENT_DISCONNECTED = 'Opponent disconnected'
 
 # data that can be sent to server
 WAITING_GAME_START = 'Waiting for game to start'
@@ -31,11 +32,24 @@ def main():
             try:
                 n.send(message)
                 reply = n.receive()
-                # print('Sending to server: ', message)
-                # print("Received from server:", reply)
+                print(reply)
+
+                # # opponent disconnected. disconnect and reconnect to start a new game
+                # if reply == OPPONENT_DISCONNECTED:
+                #     reconnect_message = n.reconnect()
+                #     if reconnect_message == ERROR:
+                #         print('Connection Terminated. Game is already full.')
+                #     else:
+                #         print(reconnect_message)
+                #         if reconnect_message[-1] == '0':
+                #             player_color = 'white'
+                #             is_turn = True
+                #         else:
+                #             player_color = 'black'
+                #             is_turn = False
 
                 # server is waiting to connect to an opponent
-                if reply == WAITING_FOR_OPPONENT:
+                elif reply == WAITING_FOR_OPPONENT:
                     # continue to wait
                     message = WAITING_GAME_START
 
@@ -66,7 +80,6 @@ def main():
                     is_turn = True
                     message = READY
 
-                print(reply)
 
             except:
                 break

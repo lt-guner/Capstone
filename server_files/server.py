@@ -6,6 +6,7 @@ import sys
 WAITING_FOR_OPPONENT = 'Waiting for opponent'
 WAITING_FOR_TURN = 'Waiting for turn'
 ERROR = 'Error'
+OPPONENT_DISCONNECTED = 'Opponent disconnected'
 
 # data that can be received from clients
 CLIENT_WAIT = 'Waiting for game to start'
@@ -30,6 +31,15 @@ def threaded_client(conn, player):
     conn.send(str.encode("Connected as player " + str(player)))
 
     while True:
+        # # check opponent is still connected
+        # if player == 0:
+        #     if player_connected[1] is False:
+        #         conn.sendall(str.encode(OPPONENT_DISCONNECTED))
+        # else:
+        #     if player_connected[0] is False:
+        #         conn.sendall(str.encode(OPPONENT_DISCONNECTED))
+
+
         try:
             data = conn.recv(2048).decode()
 
@@ -86,30 +96,26 @@ def threaded_client(conn, player):
     print("Lost connection")
     conn.close()
 
+
     global playerNum
     playerNum -= 1
     player_connected[playerNum] = False
 
 
-def is_move(data):
-    return True
-
 # index 0: white player, index 1: black player
 playerNum = 0
-player_data = [None, None]
-player_connected = [False, False]
+player_data = [None, None]          # stores move data received from the turn player
+player_connected = [False, False]   # boolean for whether players have connected
 
 while True:
     conn, addr = s.accept()
-    print("Connected to:", addr, "as player ", playerNum)
 
     if playerNum <= 1:
+        print("Connected to:", addr, "as player ", playerNum)
         start_new_thread(threaded_client, (conn, playerNum))
-        if playerNum == 0:
-            player_connected[playerNum] = True
-        elif playerNum == 1:
-            player_connected[playerNum] = True
+        player_connected[playerNum] = True
         playerNum += 1
     else:
+        # more than 2 players, disconnect immediately
         conn.send(str.encode(ERROR))
         conn.close()
