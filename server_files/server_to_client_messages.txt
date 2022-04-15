@@ -1,11 +1,12 @@
 Server-to-Client Messages:                          Meaning:
 
-'Connected as player #'                             Successfully connected to server.
+'Connected as player #'                             Initial message upon successfully connected to server.
 e.g. 'Connected as player 0'                        #0: client is white
                                                     #1: client is black
 
-'Waiting on another player'                         Received by player 0 before a player 1 has connected.
-
-'Ready'                                             Game has started. Waiting on the turn player to send a move.
+'Waiting for opponent'                              Waiting for opponent to connect (likely only received by client 0)
 
 'Error'                                             Failed to connect to server. Server already has two players.
+
+'[A-H][1-8] to [A-H][1-8]'                          A client has moved a piece from a starting coordinate to an end coordinate
+e.g. 'E2 to E4'
