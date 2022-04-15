@@ -1,0 +1,4 @@
+Client-to-Server Messages:                          Meaning:
+
+'[A-H][1-8] to [A-H][1-8]'                          Indicates a piece moved from a starting coordinate to an end coordinate
+e.g. 'E2 to E4'                                     Can be taken from the Move class object
