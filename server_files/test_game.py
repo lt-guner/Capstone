@@ -80,7 +80,6 @@ def main():
                     is_turn = True
                     message = READY
 
-
             except:
                 break
 
