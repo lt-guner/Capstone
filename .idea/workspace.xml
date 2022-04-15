@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/server_files/server_to_client_messages.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_files/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/server_files/README.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +37,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/venv" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.tabs" />
   </component>
   <component name="RunManager" selected="Python.test_game (1)">
@@ -153,6 +153,9 @@
       <option name="presentableId" value="Default" />
       <updated>1649903061177</updated>
       <workItem from="1649903063470" duration="69000" />
+      <workItem from="1649910518775" duration="29000" />
+      <workItem from="1649910549795" duration="2543000" />
+      <workItem from="1649980239119" duration="1397000" />
     </task>
     <servers />
   </component>
