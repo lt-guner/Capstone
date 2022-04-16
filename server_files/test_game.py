@@ -1,7 +1,7 @@
 from client_network import Network
 
 # data that can be received from server
-WAITING_FOR_OPPONENT = 'Waiting for opponent'
+WAITING_FOR_OPPONENT = 'Waiting for an opponent'
 WAITING_FOR_TURN = 'Waiting for turn'
 ERROR = 'Error'
 OPPONENT_DISCONNECTED = 'Opponent disconnected'

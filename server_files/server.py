@@ -3,7 +3,7 @@ from _thread import *
 import sys
 
 # data that can be sent to clients
-WAITING_FOR_OPPONENT = 'Waiting for opponent'
+WAITING_FOR_OPPONENT = 'Waiting for an opponent'
 WAITING_FOR_TURN = 'Waiting for turn'
 ERROR = 'Error'
 OPPONENT_DISCONNECTED = 'Opponent disconnected'

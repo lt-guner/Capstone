@@ -4,7 +4,7 @@ Server-to-Client Messages:                          Meaning:
 e.g. 'Connected as player 0'                        #0: client is white
                                                     #1: client is black
 
-'Waiting for opponent'                              Waiting for opponent to connect (likely only received by client 0)
+'Waiting for an opponent'                           Waiting for opponent to connect (likely only received by client 0)
 
 'Error'                                             Failed to connect to server. Server already has two players.
 
