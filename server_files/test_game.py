@@ -10,6 +10,10 @@ OPPONENT_DISCONNECTED = 'Opponent disconnected'
 WAITING_GAME_START = 'Waiting for game to start'
 READY = 'Ready'
 
+# buffer to store move data
+make_move = None        # this client has made a move to send to opponent
+opponent_move = None    # received move made by opponent
+
 def main():
     n = Network()
 
@@ -32,7 +36,9 @@ def main():
             try:
                 n.send(message)
                 reply = n.receive()
-                print(reply)
+
+                print('Sending to server:', message)
+                print('Received from server:', reply)
 
                 # # opponent disconnected. disconnect and reconnect to start a new game
                 # if reply == OPPONENT_DISCONNECTED:
@@ -48,37 +54,45 @@ def main():
                 #             player_color = 'black'
                 #             is_turn = False
 
-                # server is waiting to connect to an opponent
-                elif reply == WAITING_FOR_OPPONENT:
+                # server is waiting for an opponent to connect
+                if reply == WAITING_FOR_OPPONENT:
                     # continue to wait
                     message = WAITING_GAME_START
 
                 # server is waiting for a move
                 elif reply == WAITING_FOR_TURN:
-                    # this client's turn, set move data
+                    # this client's turn
                     if is_turn:
-                        if player_color == 'white':
-                            print("MAKING MOVE FOR", player_color.upper())
-                            message = 'e2 to e4'
-                        else:
-                            print("MAKING MOVE FOR", player_color.upper())
-                            message = 'd7 to d5'
+                        global make_move
+                        # no move data to send
+                        if make_move is None:
+                            message = READY
 
-                        # end turn
-                        is_turn = False
+                        # has move data to send
+                        else:
+                            # ready move data, end turn, empty move data buffer
+                            message = make_move
+                            is_turn = False
+                            make_move = None
 
                     # not this client's turn
                     else:
-                        # stay ready
-                        message = READY
+                        global opponent_move
+                        # no move data received from opponent
+                        if opponent_move is None:
+                            # stay ready
+                            message = READY
 
-                # gameplay, received a move message
-                else:
-                    print('RECEIVED MOVE FROM OPPONENT. STARTING TURN...')
-                    # start turn
-                    # use move data to update game state
-                    is_turn = True
-                    message = READY
+                        # received move data from opponent
+                        else:
+                            # store opponent move data into buffer
+                            opponent_move = reply
+                            # update game state in game engine and UI
+                            # opponent_move variable should be set to None after read
+
+                            # start turn, send ready message
+                            is_turn = True
+                            message = READY
 
             except:
                 break

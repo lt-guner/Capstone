@@ -12,7 +12,7 @@ OPPONENT_DISCONNECTED = 'Opponent disconnected'
 CLIENT_WAIT = 'Waiting for game to start'
 CLIENT_READY = 'Ready'
 
-server = "192.168.1.3"
+server = "192.168.1.15"
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,32 +26,31 @@ s.listen(2)
 print("Waiting for a connection, Server Started")
 
 
-def threaded_client(conn, player):
+def threaded_client(conn, playerNum):
     # initial message on connection, sends the player #
-    conn.send(str.encode("Connected as player " + str(player)))
+    conn.send(str.encode("Connected as player " + str(playerNum)))
 
     while True:
         # # check opponent is still connected
-        # if player == 0:
+        # if playerNum == 0:
         #     if player_connected[1] is False:
         #         conn.sendall(str.encode(OPPONENT_DISCONNECTED))
         # else:
         #     if player_connected[0] is False:
         #         conn.sendall(str.encode(OPPONENT_DISCONNECTED))
 
-
         try:
             data = conn.recv(2048).decode()
 
             if not data:
                 # for some reason, no data was received
-                print("Disconnected")
+                print("Disconnected from player", playerNum)
                 break
 
             else:
                 # client is waiting for confirmation that the game has begun
                 if data == CLIENT_WAIT:
-                    if player == 0:
+                    if playerNum == 0:
                         # check if the opponent is connected
                         if player_connected[1] is False:
                             # reply waiting for opponent
@@ -67,11 +66,11 @@ def threaded_client(conn, player):
                 # client is waiting to receive move data
                 elif data == CLIENT_READY:
                     # check if opponent has move data to send
-                    if player == 0 and player_data[1] is not None:
+                    if playerNum == 0 and player_data[1] is not None:
                         # reply with opponent's move data, clear data
                         reply = player_data[1]
                         player_data[1] = None
-                    elif player == 1 and player_data[0] is not None:
+                    elif playerNum == 1 and player_data[0] is not None:
                         reply = player_data[0]
                         player_data[0] = None
 
@@ -82,11 +81,11 @@ def threaded_client(conn, player):
                 # client has sent move data
                 else:
                     # save move data
-                    player_data[player] = data
+                    player_data[playerNum] = data
                     reply = WAITING_FOR_TURN
 
-                print("Received from player " + str(player) + ": ", data)
-                print("Sending to player " + str(player) + ": ", reply)
+                print("Received from player " + str(playerNum) + ": ", data)
+                print("Sending to player " + str(playerNum) + ": ", reply)
 
             conn.sendall(str.encode(reply))
 
@@ -96,25 +95,25 @@ def threaded_client(conn, player):
     print("Lost connection")
     conn.close()
 
-
-    global playerNum
-    playerNum -= 1
+    # player disconnected, updates playerNum and player_connected variables
+    global playerCount
+    playerCount -= 1
     player_connected[playerNum] = False
 
 
 # index 0: white player, index 1: black player
-playerNum = 0
+playerCount = 0
 player_data = [None, None]          # stores move data received from the turn player
 player_connected = [False, False]   # boolean for whether players have connected
 
 while True:
     conn, addr = s.accept()
 
-    if playerNum <= 1:
-        print("Connected to:", addr, "as player ", playerNum)
-        start_new_thread(threaded_client, (conn, playerNum))
-        player_connected[playerNum] = True
-        playerNum += 1
+    if playerCount <= 1:
+        print("Connected to:", addr, "as player ", playerCount)
+        start_new_thread(threaded_client, (conn, playerCount))
+        player_connected[playerCount] = True
+        playerCount += 1
     else:
         # more than 2 players, disconnect immediately
         conn.send(str.encode(ERROR))
