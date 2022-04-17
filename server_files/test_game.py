@@ -70,10 +70,11 @@ def main():
 
                         # has move data to send
                         else:
-                            # ready move data, end turn, empty move data buffer
+                            print("SENDING MOVE TO SERVER")
+                            # ready move data, empty move data buffer, end turn
                             message = make_move
-                            is_turn = False
                             make_move = None
+                            is_turn = False     # can be changed with how game engine tracks turn
 
                     # not this client's turn
                     else:
@@ -87,11 +88,13 @@ def main():
                         else:
                             # store opponent move data into buffer
                             opponent_move = reply
+                            opponent_move = None
+
                             # update game state in game engine and UI
-                            # opponent_move variable should be set to None after read
+                            print("RECEIVED OPPONENT MOVE FROM SERVER")
 
                             # start turn, send ready message
-                            is_turn = True
+                            is_turn = True      # can be changed with how game engine tracks turn
                             message = READY
 
             except:
