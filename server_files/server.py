@@ -31,13 +31,13 @@ def threaded_client(conn, playerNum):
     conn.send(str.encode("Connected as player " + str(playerNum)))
 
     while True:
-        # # check opponent is still connected
-        # if playerNum == 0:
-        #     if player_connected[1] is False:
-        #         conn.sendall(str.encode(OPPONENT_DISCONNECTED))
-        # else:
-        #     if player_connected[0] is False:
-        #         conn.sendall(str.encode(OPPONENT_DISCONNECTED))
+        # opponent is disconnected
+        if playerNum == 0:
+            if player_connected[1] is False and player_ip[1]:
+                conn.sendall(str.encode(OPPONENT_DISCONNECTED))
+        else:
+            if player_connected[0] is False and player_ip[0]:
+                conn.sendall(str.encode(OPPONENT_DISCONNECTED))
 
         try:
             data = conn.recv(2048).decode()
@@ -100,19 +100,31 @@ def threaded_client(conn, playerNum):
     playerCount -= 1
     player_connected[playerNum] = False
 
-
 # index 0: white player, index 1: black player
 playerCount = 0
 player_data = [None, None]          # stores move data received from the turn player
 player_connected = [False, False]   # boolean for whether players have connected
+player_ip = [None, None]
 
 while True:
     conn, addr = s.accept()
 
     if playerCount <= 1:
-        print("Connected to:", addr, "as player ", playerCount)
-        start_new_thread(threaded_client, (conn, playerCount))
-        player_connected[playerCount] = True
+        # check if the player is reconnecting (has the same ip address)
+        if player_connected[0] is False and addr == player_ip[0]:
+            print("Reconnected to:", addr, "as player 0")
+            start_new_thread(threaded_client, (conn, 0))
+        elif player_connected[1] is False and addr == player_ip[1]:
+            print("Reconnected to:", addr, "as player 1")
+            start_new_thread(threaded_client, (conn, 1))
+
+        # initial connection
+        else:
+            print("Connected to:", addr, "as player ", playerCount)
+            player_connected[playerCount] = True
+            player_ip[playerCount] = addr
+            start_new_thread(threaded_client, (conn, playerCount))
+
         playerCount += 1
     else:
         # more than 2 players, disconnect immediately
