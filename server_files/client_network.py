@@ -22,15 +22,13 @@ class Network:
         try:
             self.client.send(str.encode(data))
         except socket.error as e:
-            pass
-            #self.reconnect()
+            self.reconnect()
 
     def receive(self):
         try:
             return self.client.recv(2048).decode()
         except socket.error as e:
-            pass
-            #self.reconnect()
+            self.reconnect()
 
     def reconnect(self):
         print(LOST_CONN_RECONN)
