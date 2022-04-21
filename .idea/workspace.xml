@@ -140,10 +140,10 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.server" />
-      <item itemvalue="Python.test_game" />
       <item itemvalue="Python.server (1)" />
+      <item itemvalue="Python.server" />
       <item itemvalue="Python.test_game (1)" />
+      <item itemvalue="Python.test_game" />
     </list>
     <recent_temporary>
       <list>
