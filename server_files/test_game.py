@@ -1,18 +1,16 @@
 from client_network import Network
+from constants import *
 
-# data that can be received from server
-WAITING_FOR_OPPONENT = 'Waiting for an opponent'
-WAITING_FOR_TURN = 'Waiting for turn'
-ERROR = 'Error'
-OPPONENT_DISCONNECTED = 'Opponent disconnected'
-
-# data that can be sent to server
-WAITING_GAME_START = 'Waiting for game to start'
-READY = 'Ready'
 
 # buffer to store move data
 make_move = None        # this client has made a move to send to opponent
 opponent_move = None    # received move made by opponent
+
+def get_player_color(data):
+    if connect_message[-1] == '0':
+        return WHITE, True
+    else:
+        return BLACK, False
 
 def main():
     n = Network()
@@ -20,15 +18,10 @@ def main():
     # establish connection and receive first
     connect_message = n.connect()
     if connect_message == ERROR:
-        print('Connection Terminated. Game is already full.')
+        print(GAME_FULL)
     else:
         print(connect_message)
-        if connect_message[-1] == '0':
-            player_color = 'white'
-            is_turn = True
-        else:
-            player_color = 'black'
-            is_turn = False
+        player_color, is_turn = get_player_color(connect_message)
 
         # initial message: waiting for server to indicate game is ready
         message = WAITING_GAME_START
