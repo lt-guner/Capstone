@@ -1,16 +1,19 @@
 import socket
+from time import sleep
+from constants import *
 
 
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "192.168.1.15"
-        self.port = 5555
-        self.addr = (self.server, self.port)
+        self.addr = (SERVER, PORT)
+        self.connected = False
 
     def connect(self):
         try:
             self.client.connect(self.addr)
+            print(CONN_SUCCESS)
+            self.connected = True
             return self.client.recv(2048).decode()
         except:
             pass
@@ -19,17 +22,18 @@ class Network:
         try:
             self.client.send(str.encode(data))
         except socket.error as e:
-            print(e)
+            self.reconnect()
 
     def receive(self):
         try:
             return self.client.recv(2048).decode()
         except socket.error as e:
-            print(e)
+            self.reconnect()
 
     def reconnect(self):
+        print(LOST_CONN_RECONN)
         try:
-            client.close()
-            return self.connect()
-        except socket.error as e:
-            print(e)
+            client.connect(self.addr)
+            print(RECONN_SUCCESS)
+        except socket.error:
+            sleep(2)
