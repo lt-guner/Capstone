@@ -99,7 +99,7 @@ class ChessEngine:
             self.change_turn()
 
             # if king is attacked then not a valid move
-            if self.is_in_check(sim_move.get_piece_moved()[0]):
+            if self.is_in_check():
                 moves.remove(moves[i])
 
             self.change_turn()
@@ -108,7 +108,7 @@ class ChessEngine:
         # if there are no moves left then it is either checkmate or stalemate
         if len(moves) == 0:
             # if its in check, then it is also checkmate
-            if self.is_in_check(WHITE) or self.is_in_check(BLACK):
+            if self.is_in_check() or self.is_in_check():
                 self.checkmate = True
             # else its stalemate
             else:
@@ -116,12 +116,12 @@ class ChessEngine:
 
         return moves
 
-    def is_in_check(self, color) -> bool:
+    def is_in_check(self) -> bool:
         """
         determines if the enemy can attack the current players king
         """
         # determine which king to determine if it is in check
-        if color == WHITE:
+        if self.white_turn == WHITE:
             row = self.white_king_loc[0]
             col = self.white_king_loc[1]
         else:
