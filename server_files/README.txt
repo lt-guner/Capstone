@@ -3,7 +3,7 @@ Chess / Boardgame: Server Description
 
 upon initial connection:
     - sends a string "Connected as player #" (can be changed)
-    - player number will be 0 (white) or 1 (black
+    - player number will be 0 (white) or 1 (black)
     - client can decode the last char of this initial connection string to set its color
 
 during connection / gameplay:

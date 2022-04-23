@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="">
+    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_files/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/server_files/README.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,6 +169,9 @@
       <workItem from="1650392518113" duration="207000" />
       <workItem from="1650392743478" duration="3922000" />
       <workItem from="1650559636043" duration="2686000" />
+      <workItem from="1650572414680" duration="288000" />
+      <workItem from="1650572766766" duration="236000" />
+      <workItem from="1650578149250" duration="618000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
