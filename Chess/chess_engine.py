@@ -180,33 +180,33 @@ class ChessEngine:
         if color == WHITE:
             # if first position up is empty then add the Move object for the move
             if self.is_empty_square(row - 1, col):
-                moves_list.append(Move((row, col), (row - 1, col), self.board))
+                moves_list.append(Move((row, col), (row - 1, col), self.board), len(self.move_log))
 
                 # it is in starting position then add the two move jump to the list
                 if row == 6 and self.is_empty_square(row - 2, col):
-                    moves_list.append(Move((row, col), (row - 2, col), self.board))
+                    moves_list.append(Move((row, col), (row - 2, col), self.board, len(self.move_log)))
 
             # check if pawn has a piece to capture diagonally up
             if self.is_enemy_piece(row - 1, col - 1, color):
-                moves_list.append(Move((row, col), (row - 1, col - 1), self.board))
+                moves_list.append(Move((row, col), (row - 1, col - 1), self.board, len(self.move_log)))
             if self.is_enemy_piece(row - 1, col + 1, color):
-                moves_list.append(Move((row, col), (row - 1, col + 1), self.board))
+                moves_list.append(Move((row, col), (row - 1, col + 1), self.board, len(self.move_log)))
 
         # black pawn
         elif color == BLACK:
             # if first position down is empty then add the Move object for the move
             if self.is_empty_square(row + 1, col):
-                moves_list.append(Move((row, col), (row + 1, col), self.board))
+                moves_list.append(Move((row, col), (row + 1, col), self.board, len(self.move_log)))
 
                 # it is in starting position then add the two move jump to the list
                 if row == 1 and self.is_empty_square(row + 2, col):
-                    moves_list.append(Move((row, col), (row + 2, col), self.board))
+                    moves_list.append(Move((row, col), (row + 2, col), self.board, len(self.move_log)))
 
             # check if pawn has a piece to capture diagonally down
             if self.is_enemy_piece(row + 1, col - 1, color):
-                moves_list.append(Move((row, col), (row + 1, col - 1), self.board))
+                moves_list.append(Move((row, col), (row + 1, col - 1), self.board, len(self.move_log)))
             if self.is_enemy_piece(row + 1, col + 1, color):
-                moves_list.append(Move((row, col), (row + 1, col + 1), self.board))
+                moves_list.append(Move((row, col), (row + 1, col + 1), self.board, len(self.move_log)))
 
     def moves_rbq(self, row, col, piece, color, moves_list):
         """
@@ -228,13 +228,13 @@ class ChessEngine:
 
             # add empty spaces in that direction (is_empty_square checks for valid row/col)
             while self.is_empty_square(cur_row, cur_col):
-                moves_list.append(Move((row, col), (cur_row, cur_col), self.board))
+                moves_list.append(Move((row, col), (cur_row, cur_col), self.board, len(self.move_log)))
                 cur_row += mov_dir[0]
                 cur_col += mov_dir[1]
 
             # check if one more space has an enemy piece (is_enemy_piece checks for valid row/col)
             if self.is_enemy_piece(cur_row, cur_col, color):
-                moves_list.append(Move((row, col), (cur_row, cur_col), self.board))
+                moves_list.append(Move((row, col), (cur_row, cur_col), self.board, len(self.move_log)))
 
     def moves_nk(self, row, col, piece, color, moves_list):
         """
@@ -251,7 +251,7 @@ class ChessEngine:
 
             # if the potential move is empty or has an enemy piece
             if self.is_empty_square(cur_row, cur_col) or self.is_enemy_piece(cur_row, cur_col, color):
-                moves_list.append(Move((row, col), (cur_row, cur_col), self.board))
+                moves_list.append(Move((row, col), (cur_row, cur_col), self.board, len(self.move_log)))
 
     def get_board(self):
         """

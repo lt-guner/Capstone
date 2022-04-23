@@ -7,7 +7,7 @@ class Move:
     It then stores the piece that moved and piece that was captured based on that starting and ending coords.
     """
 
-    def __init__(self, startSq, endSq, board):
+    def __init__(self, startSq, endSq, board, id):
         self.start_row = startSq[0]
         self.start_col = startSq[1]
         self.end_row = endSq[0]
@@ -16,7 +16,7 @@ class Move:
         self.piece_captured = board[self.end_row][self.end_col]
 
         # creates a unique id like a hash function
-        self.move_id = self.start_row * 1000 + self.start_col * 100 + self.end_row * 10 + self.end_col
+        self.move_id = id
 
     def __eq__(self, other):
         """
