@@ -1,5 +1,5 @@
-from move import Move
-from constants import *
+from .move import Move
+from .constants import *
 
 
 class ChessEngine:
