@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="">
+    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FrontEnd/frontend.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/frontend.py" afterDir="false" />
     </list>
@@ -159,11 +159,11 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.run_frontend" />
       <item itemvalue="Python.server (1)" />
       <item itemvalue="Python.server" />
       <item itemvalue="Python.test_game (1)" />
       <item itemvalue="Python.test_game" />
-      <item itemvalue="Python.run_frontend" />
     </list>
     <recent_temporary>
       <list>
