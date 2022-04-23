@@ -4,6 +4,7 @@ from .constants import WIDTH, HEIGHT
 from .board import Board
 
 from Chess.chess_engine import ChessEngine
+from Chess.move import Move
 
 engine = ChessEngine()
 
@@ -28,8 +29,14 @@ def main():
                 run = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                board.selected_piece = mouse_square
-                pass
+                if board.selected_piece:
+                    move = Move(board.selected_piece, mouse_square, engine.board)
+                    engine.make_move(move)
+                    board.selected_piece = None
+                else:
+                    row, col = mouse_square
+                    if not engine.is_empty_square(row, col):
+                        board.selected_piece = mouse_square
 
         board.draw_squares(WIN)
         board.draw_selected(WIN)

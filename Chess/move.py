@@ -1,4 +1,4 @@
-from constants import *
+from .constants import *
 
 
 class Move:
@@ -16,7 +16,7 @@ class Move:
         self.piece_captured = board[self.end_row][self.end_col]
 
         # creates a unique id like a hash function
-        self.move_id = self.start_row * 1000 + self.start_col * 100 + self.end_row * 10 + self.end_col
+        self.move_id = self.start_row * 1000 + self.start_col * 100 + self.end_row * 0 + self.end_col
 
     def __eq__(self, other):
         """

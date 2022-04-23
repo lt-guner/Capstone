@@ -21,18 +21,18 @@ class Board:
         for row in range(ROWS):
             for col in range(COLS):
                 piece = layout[row][col]
-                if piece != "--":
+                if piece != None:
                     win.blit(pieceImages[piece], (col * SQUARE_SIZE + PIECE_OFFSET, row * SQUARE_SIZE + PIECE_OFFSET))
 
     def get_mouse_square(self):
         mouse_coords = pygame.mouse.get_pos()
-        x = mouse_coords[0]//SQUARE_SIZE
-        y = mouse_coords[1]//SQUARE_SIZE
-        return (x,y)
+        col = mouse_coords[0]//SQUARE_SIZE
+        row = mouse_coords[1]//SQUARE_SIZE
+        return (row,col)
 
     def draw_selected(self, win):
         if self.selected_piece:
-            col, row = self.selected_piece
+            row, col = self.selected_piece
             pygame.draw.rect(win, GREEN, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 
