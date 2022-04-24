@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/board.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/board.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FrontEnd/frontend.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/frontend.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -195,7 +193,7 @@
       <workItem from="1650392518113" duration="207000" />
       <workItem from="1650392743478" duration="3922000" />
       <workItem from="1650559636043" duration="2686000" />
-      <workItem from="1650731607002" duration="496000" />
+      <workItem from="1650731607002" duration="771000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
