@@ -18,6 +18,9 @@ def main():
     run = True
     clock = pygame.time.Clock()
     board = Board()
+    # get valid moves to start and move_made to False
+    valid_moves = engine.valid_moves()
+    move_made = False
 
     while run:
         clock.tick(FPS)
@@ -31,12 +34,20 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if board.selected_piece:
                     move = Move(board.selected_piece, mouse_square, engine.board)
-                    engine.make_move(move)
+                    # make a move if it is a valid move and set move_made to true
+                    for i in range(len(valid_moves)):
+                        if move == valid_moves[i]:
+                            engine.make_move(valid_moves[i])
+                            move_made = True
                     board.selected_piece = None
                 else:
                     row, col = mouse_square
                     if not engine.is_empty_square(row, col):
                         board.selected_piece = mouse_square
+        # get the next set of valid moves and reset move_made
+        if move_made:
+            valid_moves = engine.valid_moves()
+            move_made = False
 
         board.draw_squares(WIN)
         board.draw_selected(WIN)
