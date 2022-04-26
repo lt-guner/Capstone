@@ -26,7 +26,7 @@ class ChessEngine:
         self.white_turn = True
         self.move_log = []  # stores Move objects
         self.chess_notation = []  # stores chess notation of the start and end square of the move
-        self.pieces_captured = []  # stores pieces that have been captured
+        self.pieces_captured = []  # store pieces that have been captured
         self.legible_move_list = []  # stores full move information string for printing on the UI
 
         # king locations
@@ -74,9 +74,17 @@ class ChessEngine:
 
         # if current piece moved two places then save enpassant square to capture else set to empty
         if (move.piece_moved == 'wP' or move.piece_moved == 'bP') and abs(move.start_row - move.end_row) == 2:
-            self.enpassant_coords = ((move.start_row + move.end_row)//2, move.end_col)
+            self.enpassant_coords = ((move.start_row + move.end_row) // 2, move.end_col)
         else:
             self.enpassant_coords = ()
+
+        if move.castling_move:
+            if move.end_col - move.start_col == 2:
+                self.board[move.end_row][move.end_col - 1] = move.piece_moved[0] + 'R'
+                self.board[move.end_row][move.end_col + 1] = None
+            else:
+                self.board[move.end_row][move.end_col + 1] = move.piece_moved[0] + 'R'
+                self.board[move.end_row][move.end_col - 2] = None
 
     def undo_move(self):
         """
@@ -116,6 +124,17 @@ class ChessEngine:
                     (abs(undone_move.start_row - undone_move.end_row) == 2):
                 self.enpassant_coords = ()
 
+            # if castle move undo the move
+            if undone_move.castling_move:
+                if undone_move.end_col - undone_move.start_col == 2:
+                    self.board[undone_move.end_row][undone_move.end_col + 1] = self.board[undone_move.end_row][
+                        undone_move.end_col - 1]
+                    self.board[undone_move.end_row][undone_move.end_col - 1] = None
+                else:
+                    self.board[undone_move.end_row][undone_move.end_col - 2] = self.board[undone_move.end_row][
+                        undone_move.end_col + 1]
+                    self.board[undone_move.end_row][undone_move.end_col + 1] = None
+
     def valid_moves(self):
         """
         moves considering if a check or checkmate can happen, so this function will filter out those moves and not allow
@@ -127,6 +146,12 @@ class ChessEngine:
 
         # generate all possible moves for the current color
         moves = self.all_moves()
+
+        # castling moves need to be made outside all moves
+        if self.white_turn:
+            self.castling_moves(self.white_king_loc[0], self.white_king_loc[1], WHITE, moves)
+        else:
+            self.castling_moves(self.black_king_loc[0], self.black_king_loc[1], BLACK, moves)
 
         # check if any of the moves would put the turn player in check (invalid move)
         for i in range(len(moves) - 1, -1, -1):
@@ -155,18 +180,21 @@ class ChessEngine:
 
         return moves
 
-    def is_in_check(self, color) -> bool:
+    def is_in_check(self, color, castling_row=0, castling_col=0, castling=False) -> bool:
         """
         determines if the enemy can attack the current players king
         """
+        row = castling_row
+        col = castling_col
 
         # determine which king to determine if it is in check
-        if color == WHITE:
-            row = self.white_king_loc[0]
-            col = self.white_king_loc[1]
-        else:
-            row = self.black_king_loc[0]
-            col = self.black_king_loc[1]
+        if not castling:
+            if color == WHITE:
+                row = self.white_king_loc[0]
+                col = self.white_king_loc[1]
+            else:
+                row = self.black_king_loc[0]
+                col = self.black_king_loc[1]
 
         # switch to opponent to see the opponent's moves
         self.change_turn()
@@ -309,6 +337,79 @@ class ChessEngine:
             # if the potential move is empty or has an enemy piece
             if self.is_empty_square(cur_row, cur_col) or self.is_enemy_piece(cur_row, cur_col, color):
                 moves_list.append(Move((row, col), (cur_row, cur_col), self.board))
+
+    def castling_moves(self, row, col, color, moves_list):
+        """
+        determines what the castling moves can be made if castling rights are eligible
+        """
+
+        # if king is in check then return false
+        if self.is_in_check(color, castling_row=row, castling_col=col, castling=True):
+            return
+
+        # gather the rights for each rook and king
+        castle_rights = self.get_castling_rights()
+
+        # gather the castling moves that are possible for the king
+        if (color == WHITE and castle_rights[0]) or (color == BLACK and castle_rights[1]):
+            self.king_side_castle(row, col, color, moves_list)
+
+        # gather the castling moves that are possible for the queen
+        if (color == WHITE and castle_rights[2]) or (color == BLACK and castle_rights[3]):
+            self.queen_side_castle(row, col, color, moves_list)
+
+    def king_side_castle(self, row, col, color, moves_list):
+        """
+        returns the moves for castling of king side
+        """
+        if self.is_empty_square(row, col + 1) and self.is_empty_square(row, col + 2):
+            if not self.is_in_check(color, castling_row=row, castling_col=col+1, castling=True) \
+                    and not self.is_in_check(color, castling_row=row, castling_col=col+2, castling=True):
+                moves_list.append(Move((row, col), (row, col + 2), self.board, castle=True))
+
+    def queen_side_castle(self, row, col, color, moves_list):
+        """
+        returns the moves for castling of queen side
+        """
+        if self.is_empty_square(row, col-1) and self.is_empty_square(row, col-2) and self.is_empty_square(row, col-3):
+            if not self.is_in_check(color, castling_row=row, castling_col=col-1, castling=True) \
+                    and not self.is_in_check(color, castling_row=row, castling_col=col-2, castling=True):
+                moves_list.append(Move((row, col), (row, col - 2), self.board, castle=True))
+
+    def get_castling_rights(self):
+        """
+        The method gathers rights of the castling capabilities for white king and queens side and black king and
+        queen side. It then returns True or False for each of the four eligibility.
+        """
+
+        # set all castling rights to True
+        wks, bks, wqs, bqs = True, True, True, True
+        for i in range(len(self.move_log)):
+
+            # if king moved, then both white king side and black side are False
+            if self.move_log[i].piece_moved == 'wK':
+                wks, wqs = False, False
+
+            # same as above but for black
+            if self.move_log[i].piece_moved == 'bK':
+                bks, bqs = False, False
+
+            # check if either white rook moved and set the rights accordingly
+            if self.move_log[i].piece_moved == 'wR':
+                if self.move_log[i].start_row == 7 and self.move_log[i].start_col == 0:
+                    wqs = False
+                elif self.move_log[i].start_row == 7 and self.move_log[i].start_col == 7:
+                    wks = False
+
+            # check if either black rook moved and set the rights accordingly
+            if self.move_log[i].piece_moved == 'bR':
+                if self.move_log[i].start_row == 0 and self.move_log[i].start_col == 0:
+                    wqs = False
+                elif self.move_log[i].start_row == 0 and self.move_log[i].start_col == 7:
+                    wks = False
+
+        # help
+        return [wks, bks, wqs, bqs]
 
     def get_board(self):
         """
