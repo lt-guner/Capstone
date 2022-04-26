@@ -8,6 +8,10 @@ class ChessEngine:
     """
 
     def __init__(self):
+        """
+        The init method keeps track of board, movements, and logs
+        """
+
         # keeps track of player turn, move log, piece capture, and board notation
         self.board = [
             ['bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR'],
@@ -29,6 +33,8 @@ class ChessEngine:
         self.white_king_loc = (7, 4)
         self.black_king_loc = (0, 4)
 
+        self.enpassant_coords = ()  # used to save the enpassant
+
         # keep track of check mate and stalemate
         self.checkmate = False
         self.stalemate = False
@@ -38,6 +44,7 @@ class ChessEngine:
         Accepts a Move object to update the board and move log
         Does not validate the move!!
         """
+
         # update self.board by moving the piece to the coordinates
         self.board[move.start_row][move.start_col] = None
         self.board[move.end_row][move.end_col] = move.get_piece_moved()
@@ -57,10 +64,25 @@ class ChessEngine:
         elif move.piece_moved == 'bK':
             self.black_king_loc = (move.end_row, move.end_col)
 
+        # pawn promotion
+        if move.pawn_promotion:
+            self.board[move.end_row][move.end_col] = move.piece_moved[0] + 'Q'
+
+        # if an enpassant moved was made, then the square behind needs to be set to false
+        if move.enpassant_move:
+            self.board[move.start_row][move.end_col] = None
+
+        # if current piece moved two places then save enpassant square to capture else set to empty
+        if (move.piece_moved == 'wP' or move.piece_moved == 'bP') and abs(move.start_row - move.end_row) == 2:
+            self.enpassant_coords = ((move.start_row + move.end_row)//2, move.end_col)
+        else:
+            self.enpassant_coords = ()
+
     def undo_move(self):
         """
         Undoes the last move
         """
+
         # make sure that there is actually move to undo or error is thrown
         if len(self.move_log) > 0:
             # get the Move object being undone and remove the last entry from all the logs
@@ -83,11 +105,25 @@ class ChessEngine:
             elif undone_move.piece_moved == 'bK':
                 self.black_king_loc = (undone_move.start_row, undone_move.start_col)
 
+            # if a move that was undone was an enpassant then reset the values of the square
+            if undone_move.enpassant_move:
+                self.board[undone_move.end_row][undone_move.end_col] = None
+                self.board[undone_move.start_row][undone_move.end_col] = undone_move.piece_captured
+                self.enpassant_coords = (undone_move.end_row, undone_move.end_col)
+
+            # undo a two pawn on advance
+            if (undone_move.piece_moved == 'wP' or undone_move.piece_moved == 'bP') and \
+                    (abs(undone_move.start_row - undone_move.end_row) == 2):
+                self.enpassant_coords = ()
+
     def valid_moves(self):
         """
         moves considering if a check or checkmate can happen, so this function will filter out those moves and not allow
         for the player to make those
         """
+
+        # save the current enpassant to restore it later
+        temp_enpassant = self.enpassant_coords
 
         # generate all possible moves for the current color
         moves = self.all_moves()
@@ -99,7 +135,7 @@ class ChessEngine:
             self.change_turn()
 
             # if king is attacked then not a valid move
-            if self.is_in_check():
+            if self.is_in_check(sim_move.get_piece_moved()[0]):
                 moves.remove(moves[i])
 
             self.change_turn()
@@ -108,20 +144,24 @@ class ChessEngine:
         # if there are no moves left then it is either checkmate or stalemate
         if len(moves) == 0:
             # if its in check, then it is also checkmate
-            if self.is_in_check() or self.is_in_check():
+            if self.is_in_check(WHITE) or self.is_in_check(BLACK):
                 self.checkmate = True
             # else its stalemate
             else:
                 self.stalemate = True
 
+        # restore the current enpassant
+        self.enpassant_coords = temp_enpassant
+
         return moves
 
-    def is_in_check(self) -> bool:
+    def is_in_check(self, color) -> bool:
         """
         determines if the enemy can attack the current players king
         """
+
         # determine which king to determine if it is in check
-        if self.white_turn == WHITE:
+        if color == WHITE:
             row = self.white_king_loc[0]
             col = self.white_king_loc[1]
         else:
@@ -148,6 +188,7 @@ class ChessEngine:
         Returns a list of all moves to empty space or to capture enemy piece for piece of the turn player
         Does not consider if the move puts the turn player in check/checkmate
         """
+
         all_moves = []  # list of Move objects
 
         # check each board location
@@ -192,6 +233,14 @@ class ChessEngine:
             if self.is_enemy_piece(row - 1, col + 1, color):
                 moves_list.append(Move((row, col), (row - 1, col + 1), self.board))
 
+            # enpassant move
+            if self.is_empty_square(row - 1, col - 1):
+                if self.enpassant_coords == (row - 1, col - 1):
+                    moves_list.append(Move((row, col), (row - 1, col - 1), self.board, enpassant=True))
+            if self.is_empty_square(row - 1, col + 1):
+                if self.enpassant_coords == (row - 1, col + 1):
+                    moves_list.append(Move((row, col), (row - 1, col + 1), self.board, enpassant=True))
+
         # black pawn
         elif color == BLACK:
             # if first position down is empty then add the Move object for the move
@@ -207,6 +256,14 @@ class ChessEngine:
                 moves_list.append(Move((row, col), (row + 1, col - 1), self.board))
             if self.is_enemy_piece(row + 1, col + 1, color):
                 moves_list.append(Move((row, col), (row + 1, col + 1), self.board))
+
+            # make enpassant move
+            if self.is_empty_square(row + 1, col - 1):
+                if self.enpassant_coords == (row + 1, col - 1):
+                    moves_list.append(Move((row, col), (row + 1, col - 1), self.board, enpassant=True))
+            if self.is_empty_square(row + 1, col + 1):
+                if self.enpassant_coords == (row + 1, col + 1):
+                    moves_list.append(Move((row, col), (row + 1, col + 1), self.board, enpassant=True))
 
     def moves_rbq(self, row, col, piece, color, moves_list):
         """
