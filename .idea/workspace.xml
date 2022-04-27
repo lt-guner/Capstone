@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,7 +44,29 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.tabs" />
   </component>
-  <component name="RunManager" selected="Python.test_game (1)">
+  <component name="RunManager" selected="Python.run_frontend">
+    <configuration name="run_frontend" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\joshl\PycharmProjects\SpaceInvaders\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_frontend.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="server (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -136,6 +156,7 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.run_frontend" />
       <item itemvalue="Python.server (1)" />
       <item itemvalue="Python.server" />
       <item itemvalue="Python.test_game (1)" />
@@ -143,6 +164,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.run_frontend" />
         <item itemvalue="Python.test_game (1)" />
         <item itemvalue="Python.server (1)" />
         <item itemvalue="Python.test_game" />
@@ -168,6 +190,10 @@
       <workItem from="1650392518113" duration="207000" />
       <workItem from="1650392743478" duration="3922000" />
       <workItem from="1650559636043" duration="2686000" />
+      <workItem from="1650731607002" duration="2138000" />
+      <workItem from="1650819242420" duration="1712000" />
+      <workItem from="1650922870477" duration="475000" />
+      <workItem from="1651083174366" duration="2500000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -195,6 +221,7 @@
     <SUITE FILE_PATH="coverage/CapstoneCS467$server__1_.coverage" NAME="server (1) Coverage Results" MODIFIED="1650561598840" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server_files" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$test_game__1_.coverage" NAME="test_game (1) Coverage Results" MODIFIED="1650561600655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server_files" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$test_game.coverage" NAME="test_game Coverage Results" MODIFIED="1649900955285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CapstoneCS467$run_frontend.coverage" NAME="run_frontend Coverage Results" MODIFIED="1650675608624" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$chess_engine.coverage" NAME="chess_engine Coverage Results" MODIFIED="1649815351556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/luo_chess_engine_test" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$server.coverage" NAME="server Coverage Results" MODIFIED="1649900953237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
