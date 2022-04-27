@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chess/chess_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chess/chess_engine.py" afterDir="false" />
-    </list>
+    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -196,7 +193,7 @@
       <workItem from="1650731607002" duration="2138000" />
       <workItem from="1650819242420" duration="1712000" />
       <workItem from="1650922870477" duration="475000" />
-      <workItem from="1651083174366" duration="2308000" />
+      <workItem from="1651083174366" duration="2500000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
