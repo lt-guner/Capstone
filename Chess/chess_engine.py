@@ -69,22 +69,23 @@ class ChessEngine:
             self.board[move.end_row][move.end_col] = move.piece_moved[0] + 'Q'
 
         # if an enpassant moved was made, then the square behind needs to be set to false
-        if move.enpassant_move:
+        elif move.enpassant_move:
             self.board[move.start_row][move.end_col] = None
 
-        # if current piece moved two places then save enpassant square to capture else set to empty
-        if (move.piece_moved == 'wP' or move.piece_moved == 'bP') and abs(move.start_row - move.end_row) == 2:
-            self.enpassant_coords = ((move.start_row + move.end_row) // 2, move.end_col)
-        else:
-            self.enpassant_coords = ()
-
-        if move.castling_move:
+        # if made a castle move, move rook to other side of king
+        elif move.castling_move:
             if move.end_col - move.start_col == 2:
                 self.board[move.end_row][move.end_col - 1] = move.piece_moved[0] + 'R'
                 self.board[move.end_row][move.end_col + 1] = None
             else:
                 self.board[move.end_row][move.end_col + 1] = move.piece_moved[0] + 'R'
                 self.board[move.end_row][move.end_col - 2] = None
+
+        # if current pawn piece moved two places, then save enpassant square to capture else set to empty
+        if (move.piece_moved == 'wP' or move.piece_moved == 'bP') and abs(move.start_row - move.end_row) == 2:
+            self.enpassant_coords = ((move.start_row + move.end_row) // 2, move.end_col)
+        else:
+            self.enpassant_coords = ()
 
     def undo_move(self):
         """
