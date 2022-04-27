@@ -34,8 +34,3 @@ class Board:
         if self.selected_piece:
             row, col = self.selected_piece
             pygame.draw.rect(win, GREEN, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
-
-
-
-
-

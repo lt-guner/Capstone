@@ -53,6 +53,14 @@ class Move:
             string += ' Capturing '
             string += PIECES[self.piece_captured]
 
+        # check: +
+
+        # checkmate: ++
+
+        # castling: O-O / O-O-O
+
+        # promotion: = (piece promoted to)
+
         return string
 
     def get_piece_moved(self):
