@@ -35,7 +35,7 @@ def main():
             # (indent code below when if statement is implemented)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if board.selected_piece:
-                    move = Move(board.selected_piece, mouse_square, engine.board, len(engine.move_log))
+                    move = Move(board.selected_piece, mouse_square, engine.board)
                     # call game engine (piece)_move() to get list of valid moves for this piece and location
                     # if move is in valid_moves_list
                         # place move into data buffer shared with client to read and send to server
