@@ -71,6 +71,8 @@ def communicate_server(net_conn: Network):
 
             # has move data to send
             else:
+                print('SENDING MOVE TO OPPONENT')
+                print(make_move.get_move_legible())
                 # ready payload with move data, empty move data buffer
                 payload = make_move
                 make_move = None
@@ -78,14 +80,17 @@ def communicate_server(net_conn: Network):
         # received opponent move data
         else:
             global opponent_move
+            print('RECEIVED OPPONENT MOVE')
+            print(reply.get_move_legible())
+
             # store opponent move data into buffer for UI and game engine
             opponent_move = reply
             payload = READY
 
         net_conn.send(payload)
 
-        print('Sending to server:', payload)
-        print('Received from server:', reply)
+        # print('Sending to server:', payload)
+        # print('Received from server:', reply)
 
         return reply
 
@@ -108,7 +113,7 @@ def main():
     while run:
         clock.tick(FPS)
 
-        # get server message regarding game state
+        # get message from server regarding game state
         server_state = communicate_server(n)
 
         mouse_square = board.get_mouse_square()
@@ -117,9 +122,8 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-            # game is playing (have opponent and is opponent is connected) and is this client's turn
+            # has opponent and opponent is connected and is this client's turn
             if server_state != WAITING_FOR_OPPONENT and server_state != OPPONENT_DISCONNECTED and is_turn(player_color):
-
                 # user clicks on the board
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # second click: placing a selected piece on the board
@@ -148,6 +152,7 @@ def main():
                 global opponent_move
                 # opponent's move data buffer contains data (Move object)
                 if opponent_move is not None:
+                    move_made = True
                     # make the move in the engine and clear the data buffer
                     engine.make_move(opponent_move)
                     opponent_move = None

@@ -82,12 +82,13 @@ def threaded_client(conn, playerNum):
 
                     # client has sent Move object
                     else:
+                        print('RECEIVED MOVE FROM PLAYER', playerNum)
                         # save move data
                         player_data[playerNum] = data
                         reply = WAITING_FOR_TURN
 
-                    print("Received from player " + str(playerNum) + ": ", data)
-                    print("Sending to player " + str(playerNum) + ": ", reply)
+                    # print("Received from player " + str(playerNum) + ": ", data)
+                    # print("Sending to player " + str(playerNum) + ": ", reply)
 
                 conn.sendall(pickle.dumps(reply))
 
