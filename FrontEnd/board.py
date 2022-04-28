@@ -1,7 +1,7 @@
 import pygame
 
-from .constants import BLACK, ROWS, COLS, SQUARE_SIZE, WHITE, DARK_BROWN, LIGHT_BROWN, PIECE_IMG_SIZE, GREEN
-from .pieces import pieceImages
+from .constants import *
+from .pieces import *
 
 PIECE_OFFSET = (SQUARE_SIZE - PIECE_IMG_SIZE)/2
 class Board:
@@ -34,8 +34,3 @@ class Board:
         if self.selected_piece:
             row, col = self.selected_piece
             pygame.draw.rect(win, GREEN, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
-
-
-
-
-
