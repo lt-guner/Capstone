@@ -8,6 +8,10 @@ class ChessEngine:
     """
 
     def __init__(self):
+        """
+        The init method keeps track of board, movements, and logs
+        """
+
         # keeps track of player turn, move log, piece capture, and board notation
         self.board = [
             ['bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR'],
@@ -22,12 +26,14 @@ class ChessEngine:
         self.white_turn = True
         self.move_log = []  # stores Move objects
         self.chess_notation = []  # stores chess notation of the start and end square of the move
-        self.pieces_captured = []  # stores pieces that have been captured
+        self.pieces_captured = []  # store pieces that have been captured
         self.legible_move_list = []  # stores full move information string for printing on the UI
 
         # king locations
         self.white_king_loc = (7, 4)
         self.black_king_loc = (0, 4)
+
+        self.enpassant_coords = ()  # used to save the enpassant
 
         # keep track of check mate and stalemate
         self.checkmate = False
@@ -38,6 +44,7 @@ class ChessEngine:
         Accepts a Move object to update the board and move log
         Does not validate the move!!
         """
+
         # update self.board by moving the piece to the coordinates
         self.board[move.start_row][move.start_col] = None
         self.board[move.end_row][move.end_col] = move.get_piece_moved()
@@ -57,10 +64,34 @@ class ChessEngine:
         elif move.piece_moved == 'bK':
             self.black_king_loc = (move.end_row, move.end_col)
 
+        # pawn promotion
+        if move.pawn_promotion:
+            self.board[move.end_row][move.end_col] = move.piece_moved[0] + 'Q'
+
+        # if an enpassant moved was made, then the square behind needs to be set to false
+        elif move.enpassant_move:
+            self.board[move.start_row][move.end_col] = None
+
+        # if made a castle move, move rook to other side of king
+        elif move.castling_move:
+            if move.end_col - move.start_col == 2:
+                self.board[move.end_row][move.end_col - 1] = move.piece_moved[0] + 'R'
+                self.board[move.end_row][move.end_col + 1] = None
+            else:
+                self.board[move.end_row][move.end_col + 1] = move.piece_moved[0] + 'R'
+                self.board[move.end_row][move.end_col - 2] = None
+
+        # if current pawn piece moved two places, then save enpassant square to capture else set to empty
+        if (move.piece_moved == 'wP' or move.piece_moved == 'bP') and abs(move.start_row - move.end_row) == 2:
+            self.enpassant_coords = ((move.start_row + move.end_row) // 2, move.end_col)
+        else:
+            self.enpassant_coords = ()
+
     def undo_move(self):
         """
         Undoes the last move
         """
+
         # make sure that there is actually move to undo or error is thrown
         if len(self.move_log) > 0:
             # get the Move object being undone and remove the last entry from all the logs
@@ -83,14 +114,45 @@ class ChessEngine:
             elif undone_move.piece_moved == 'bK':
                 self.black_king_loc = (undone_move.start_row, undone_move.start_col)
 
+            # if a move that was undone was an enpassant then reset the values of the square
+            if undone_move.enpassant_move:
+                self.board[undone_move.end_row][undone_move.end_col] = None
+                self.board[undone_move.start_row][undone_move.end_col] = undone_move.piece_captured
+                self.enpassant_coords = (undone_move.end_row, undone_move.end_col)
+
+            # undo a two pawn on advance
+            if (undone_move.piece_moved == 'wP' or undone_move.piece_moved == 'bP') and \
+                    (abs(undone_move.start_row - undone_move.end_row) == 2):
+                self.enpassant_coords = ()
+
+            # if castle move undo the move
+            if undone_move.castling_move:
+                if undone_move.end_col - undone_move.start_col == 2:
+                    self.board[undone_move.end_row][undone_move.end_col + 1] = self.board[undone_move.end_row][
+                        undone_move.end_col - 1]
+                    self.board[undone_move.end_row][undone_move.end_col - 1] = None
+                else:
+                    self.board[undone_move.end_row][undone_move.end_col - 2] = self.board[undone_move.end_row][
+                        undone_move.end_col + 1]
+                    self.board[undone_move.end_row][undone_move.end_col + 1] = None
+
     def valid_moves(self):
         """
         moves considering if a check or checkmate can happen, so this function will filter out those moves and not allow
         for the player to make those
         """
 
+        # save the current enpassant to restore it later
+        temp_enpassant = self.enpassant_coords
+
         # generate all possible moves for the current color
         moves = self.all_moves()
+
+        # castling moves need to be made outside all moves
+        if self.white_turn:
+            self.castling_moves(self.white_king_loc[0], self.white_king_loc[1], WHITE, moves)
+        else:
+            self.castling_moves(self.black_king_loc[0], self.black_king_loc[1], BLACK, moves)
 
         # check if any of the moves would put the turn player in check (invalid move)
         for i in range(len(moves) - 1, -1, -1):
@@ -99,7 +161,7 @@ class ChessEngine:
             self.change_turn()
 
             # if king is attacked then not a valid move
-            if self.is_in_check():
+            if self.is_in_check(sim_move.get_piece_moved()[0]):
                 moves.remove(moves[i])
 
             self.change_turn()
@@ -108,25 +170,32 @@ class ChessEngine:
         # if there are no moves left then it is either checkmate or stalemate
         if len(moves) == 0:
             # if its in check, then it is also checkmate
-            if self.is_in_check() or self.is_in_check():
+            if self.is_in_check(WHITE) or self.is_in_check(BLACK):
                 self.checkmate = True
             # else its stalemate
             else:
                 self.stalemate = True
 
+        # restore the current enpassant
+        self.enpassant_coords = temp_enpassant
+
         return moves
 
-    def is_in_check(self) -> bool:
+    def is_in_check(self, color, castling_row=0, castling_col=0, castling=False) -> bool:
         """
         determines if the enemy can attack the current players king
         """
+        row = castling_row
+        col = castling_col
+
         # determine which king to determine if it is in check
-        if self.white_turn == WHITE:
-            row = self.white_king_loc[0]
-            col = self.white_king_loc[1]
-        else:
-            row = self.black_king_loc[0]
-            col = self.black_king_loc[1]
+        if not castling:
+            if color == WHITE:
+                row = self.white_king_loc[0]
+                col = self.white_king_loc[1]
+            else:
+                row = self.black_king_loc[0]
+                col = self.black_king_loc[1]
 
         # switch to opponent to see the opponent's moves
         self.change_turn()
@@ -148,6 +217,7 @@ class ChessEngine:
         Returns a list of all moves to empty space or to capture enemy piece for piece of the turn player
         Does not consider if the move puts the turn player in check/checkmate
         """
+
         all_moves = []  # list of Move objects
 
         # check each board location
@@ -192,6 +262,14 @@ class ChessEngine:
             if self.is_enemy_piece(row - 1, col + 1, color):
                 moves_list.append(Move((row, col), (row - 1, col + 1), self.board))
 
+            # enpassant move
+            if self.is_empty_square(row - 1, col - 1):
+                if self.enpassant_coords == (row - 1, col - 1):
+                    moves_list.append(Move((row, col), (row - 1, col - 1), self.board, enpassant=True))
+            if self.is_empty_square(row - 1, col + 1):
+                if self.enpassant_coords == (row - 1, col + 1):
+                    moves_list.append(Move((row, col), (row - 1, col + 1), self.board, enpassant=True))
+
         # black pawn
         elif color == BLACK:
             # if first position down is empty then add the Move object for the move
@@ -207,6 +285,14 @@ class ChessEngine:
                 moves_list.append(Move((row, col), (row + 1, col - 1), self.board))
             if self.is_enemy_piece(row + 1, col + 1, color):
                 moves_list.append(Move((row, col), (row + 1, col + 1), self.board))
+
+            # make enpassant move
+            if self.is_empty_square(row + 1, col - 1):
+                if self.enpassant_coords == (row + 1, col - 1):
+                    moves_list.append(Move((row, col), (row + 1, col - 1), self.board, enpassant=True))
+            if self.is_empty_square(row + 1, col + 1):
+                if self.enpassant_coords == (row + 1, col + 1):
+                    moves_list.append(Move((row, col), (row + 1, col + 1), self.board, enpassant=True))
 
     def moves_rbq(self, row, col, piece, color, moves_list):
         """
@@ -252,6 +338,79 @@ class ChessEngine:
             # if the potential move is empty or has an enemy piece
             if self.is_empty_square(cur_row, cur_col) or self.is_enemy_piece(cur_row, cur_col, color):
                 moves_list.append(Move((row, col), (cur_row, cur_col), self.board))
+
+    def castling_moves(self, row, col, color, moves_list):
+        """
+        determines what the castling moves can be made if castling rights are eligible
+        """
+
+        # if king is in check then return false
+        if self.is_in_check(color, castling_row=row, castling_col=col, castling=True):
+            return
+
+        # gather the rights for each rook and king
+        castle_rights = self.get_castling_rights()
+
+        # gather the castling moves that are possible for the king
+        if (color == WHITE and castle_rights[0]) or (color == BLACK and castle_rights[1]):
+            self.king_side_castle(row, col, color, moves_list)
+
+        # gather the castling moves that are possible for the queen
+        if (color == WHITE and castle_rights[2]) or (color == BLACK and castle_rights[3]):
+            self.queen_side_castle(row, col, color, moves_list)
+
+    def king_side_castle(self, row, col, color, moves_list):
+        """
+        returns the moves for castling of king side
+        """
+        if self.is_empty_square(row, col + 1) and self.is_empty_square(row, col + 2):
+            if not self.is_in_check(color, castling_row=row, castling_col=col+1, castling=True) \
+                    and not self.is_in_check(color, castling_row=row, castling_col=col+2, castling=True):
+                moves_list.append(Move((row, col), (row, col + 2), self.board, castle=True))
+
+    def queen_side_castle(self, row, col, color, moves_list):
+        """
+        returns the moves for castling of queen side
+        """
+        if self.is_empty_square(row, col-1) and self.is_empty_square(row, col-2) and self.is_empty_square(row, col-3):
+            if not self.is_in_check(color, castling_row=row, castling_col=col-1, castling=True) \
+                    and not self.is_in_check(color, castling_row=row, castling_col=col-2, castling=True):
+                moves_list.append(Move((row, col), (row, col - 2), self.board, castle=True))
+
+    def get_castling_rights(self):
+        """
+        The method gathers rights of the castling capabilities for white king and queens side and black king and
+        queen side. It then returns True or False for each of the four eligibility.
+        """
+
+        # set all castling rights to True
+        wks, bks, wqs, bqs = True, True, True, True
+        for i in range(len(self.move_log)):
+
+            # if king moved, then both white king side and black side are False
+            if self.move_log[i].piece_moved == 'wK':
+                wks, wqs = False, False
+
+            # same as above but for black
+            if self.move_log[i].piece_moved == 'bK':
+                bks, bqs = False, False
+
+            # check if either white rook moved and set the rights accordingly
+            if self.move_log[i].piece_moved == 'wR':
+                if self.move_log[i].start_row == 7 and self.move_log[i].start_col == 0:
+                    wqs = False
+                elif self.move_log[i].start_row == 7 and self.move_log[i].start_col == 7:
+                    wks = False
+
+            # check if either black rook moved and set the rights accordingly
+            if self.move_log[i].piece_moved == 'bR':
+                if self.move_log[i].start_row == 0 and self.move_log[i].start_col == 0:
+                    wqs = False
+                elif self.move_log[i].start_row == 0 and self.move_log[i].start_col == 7:
+                    wks = False
+
+        # help
+        return [wks, bks, wqs, bqs]
 
     def get_board(self):
         """
