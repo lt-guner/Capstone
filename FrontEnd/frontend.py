@@ -133,10 +133,8 @@ def main():
                     # call game engine (piece)_move() to get list of valid moves for this piece and location
                     # if move is in valid_moves_list
                         # place move into data buffer shared with client to read and send to server
-                        # make_move = move.get_chess_notation()
-
-                        # engine.make_move(move) --- written below
-                        # board.selected_piece = None --- written below
+                        # engine.make_move(move) --- below
+                        # board.selected_piece = None --- below
                     # else nothing or deselect piece (place piece back)
 
                     engine.make_move(move)
@@ -150,9 +148,8 @@ def main():
             # (end indent)
             # else: opponent turn:
                 # if opponent move data buffer is not None:
-                    # create Move object from opponent move data, need function to convert chess notation to start/end row/col
-                    # opponent_move = Move(*startSq*, *endSq*, engine.board)
-                    # engine.make_move(opponent_move)
+                    # create Move object from opponent move data
+                    # engine.make_move(opponent Move object)
 
         ##### integration code for sending/receiving data with server (Josh) #####
         communicate_server(n)
