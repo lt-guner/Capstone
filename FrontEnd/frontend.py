@@ -22,8 +22,10 @@ opponent_move = None    # received move made by opponent
 
 def get_player_color(data):
     if data[-1] == '0':
+        print('Player Color: White')
         return WHITE
     else:
+        print('Player Color: Black')
         return BLACK
 
 def is_turn(color):
@@ -71,8 +73,7 @@ def communicate_server(net_conn: Network):
 
             # has move data to send
             else:
-                print('SENDING MOVE TO OPPONENT')
-                print(make_move.get_move_legible())
+                print('Sending move to opponent', make_move.get_move_legible())
                 # ready payload with move data, empty move data buffer
                 payload = make_move
                 make_move = None
@@ -80,8 +81,7 @@ def communicate_server(net_conn: Network):
         # received opponent move data
         else:
             global opponent_move
-            print('RECEIVED OPPONENT MOVE')
-            print(reply.get_move_legible())
+            print('Received opponent move:', reply.get_move_legible())
 
             # store opponent move data into buffer for UI and game engine
             opponent_move = reply
@@ -138,6 +138,7 @@ def main():
                             # store Move object into data buffer to send to server
                             global make_move
                             make_move = move
+                            print('UI/Engine: Storing move to send. END TURN.')
                         board.selected_piece = None
 
                     # first click: selecting a piece to move
@@ -151,6 +152,7 @@ def main():
                 global opponent_move
                 # opponent's move data buffer contains data (Move object)
                 if opponent_move is not None:
+                    print('UI/Engine: Making opponent move. START TURN.')
                     move_made = True
                     # make the move in the engine and clear the data buffer
                     engine.make_move(opponent_move)
