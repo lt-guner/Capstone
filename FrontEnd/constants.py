@@ -20,7 +20,7 @@ BLACK = 'b'
 
 # constants for sockets
 # socket connection parameters
-SERVER = '192.168.1.42'     # change to ip address of where server is run
+SERVER = '192.168.1.16'     # change to ip address of where server is run
 PORT = 5555
 
 # server-to-client messages
