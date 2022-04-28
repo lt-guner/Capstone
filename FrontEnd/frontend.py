@@ -49,8 +49,6 @@ def main():
                     row, col = mouse_square
                     if not engine.is_empty_square(row, col):
                         board.selected_piece = mouse_square
-                        # send row, col, piece to engine.(piece)_move() to get list of valid moves
-                        # highlight all the end squares
             # (end indent)
             # else: opponent turn:
                 # if opponent move data buffer is not None:
