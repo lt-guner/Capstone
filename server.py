@@ -42,7 +42,6 @@ def threaded_client(conn, playerNum):
         else:
             try:
                 data = pickle.loads(conn.recv(2048))
-                if playerNum == 0: print(data)
 
                 # for some reason, no data was received
                 if not data:
@@ -50,36 +49,36 @@ def threaded_client(conn, playerNum):
                     break
 
                 else:
-                    if isinstance(data, str):
-                        # client is waiting for confirmation that the game has begun
-                        if data == WAITING_GAME_START:
-                            if playerNum == 0:
-                                # check if the opponent is connected
-                                if player_connected[1] is False:
-                                    # reply waiting for opponent
-                                    reply = WAITING_FOR_OPPONENT
-                                else:
-                                    reply = WAITING_FOR_TURN
-                            else:
-                                if player_connected[0] is False:
-                                    reply = WAITING_FOR_OPPONENT
-                                else:
-                                    reply = WAITING_FOR_TURN
-
-                        # client is waiting to receive move data
-                        if data == READY:
-                            # check if opponent has move data to send
-                            if playerNum == 0 and player_data[1] is not None:
-                                # reply with opponent's move data, clear data
-                                reply = player_data[1]
-                                player_data[1] = None
-                            elif playerNum == 1 and player_data[0] is not None:
-                                reply = player_data[0]
-                                player_data[0] = None
-
-                            # opponent did not make a move yet
+                    # if isinstance(data, str):
+                    # client is waiting for confirmation that the game has begun
+                    if data == WAITING_GAME_START:
+                        if playerNum == 0:
+                            # check if the opponent is connected
+                            if player_connected[1] is False:
+                                # reply waiting for opponent
+                                reply = WAITING_FOR_OPPONENT
                             else:
                                 reply = WAITING_FOR_TURN
+                        else:
+                            if player_connected[0] is False:
+                                reply = WAITING_FOR_OPPONENT
+                            else:
+                                reply = WAITING_FOR_TURN
+
+                    # client is waiting to receive move data
+                    elif data == READY:
+                        # check if opponent has move data to send
+                        if playerNum == 0 and player_data[1] is not None:
+                            # reply with opponent's move data, clear data
+                            reply = player_data[1]
+                            player_data[1] = None
+                        elif playerNum == 1 and player_data[0] is not None:
+                            reply = player_data[0]
+                            player_data[0] = None
+
+                        # opponent did not make a move yet
+                        else:
+                            reply = WAITING_FOR_TURN
 
                     # client has sent Move object
                     else:
@@ -87,8 +86,8 @@ def threaded_client(conn, playerNum):
                         player_data[playerNum] = data
                         reply = WAITING_FOR_TURN
 
-                    # print("Received from player " + str(playerNum) + ": ", data)
-                    # print("Sending to player " + str(playerNum) + ": ", reply)
+                    print("Received from player " + str(playerNum) + ": ", data)
+                    print("Sending to player " + str(playerNum) + ": ", reply)
 
                 conn.sendall(pickle.dumps(reply))
 

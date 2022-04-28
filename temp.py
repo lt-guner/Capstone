@@ -26,27 +26,27 @@ def get_player_color(data):
     else:
         return BLACK
 
-def is_turn(color):
-    if color == WHITE and engine.white_turn:
+def is_turn():
+    if player_color == WHITE and engine.white_turn:
         return True
-    if color == BLACK and not engine.white_turn:
+    if player_color == BLACK and not engine.white_turn:
         return True
     return False
 
-def init_connect(network):
-    # establish connection and receive first message with this client's color
-    connect_message = network.connect()
+n = Network()
 
-    if connect_message == ERROR:
-        print(GAME_FULL)
-    else:
-        print(connect_message)
+# establish connection and receive first message with this client's color
+connect_message = n.connect()
 
-        # initial message: waiting for server to indicate game is ready
-        message = WAITING_GAME_START
-        network.send(message)
+if connect_message == ERROR:
+    print(GAME_FULL)
+else:
+    print(connect_message)
+    player_color = get_player_color(connect_message)
 
-        return get_player_color(connect_message)
+    # initial message: waiting for server to indicate game is ready
+    message = WAITING_GAME_START
+    n.send(message)
 
 def communicate_server(net_conn: Network):
     try:
@@ -96,11 +96,6 @@ def main():
     run = True
     clock = pygame.time.Clock()
     board = Board()
-
-    # connect to server and get player color
-    n = Network()
-    player_color = init_connect(n)
-
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
     move_made = False
@@ -118,16 +113,15 @@ def main():
                 run = False
 
             # game is playing (have opponent and is opponent is connected) and is this client's turn
-            if server_state != WAITING_FOR_OPPONENT and server_state != OPPONENT_DISCONNECTED and is_turn(player_color):
+            if server_state != WAITING_FOR_OPPONENT and server_state != OPPONENT_DISCONNECTED and is_turn():
 
                 # user clicks on the board
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # second click: placing a selected piece on the board
                     if board.selected_piece:
                         move = Move(board.selected_piece, mouse_square, engine.board)
-
                         # make a move if it is a valid move and set move_made to true
-                        for i in range(len(valid_moves)):   # can we make this if move in valid_moves?
+                        for i in range(len(valid_moves)):
                             if move == valid_moves[i]:
                                 engine.make_move(valid_moves[i])
                                 move_made = True
