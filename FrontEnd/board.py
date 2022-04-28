@@ -1,7 +1,7 @@
 import pygame
 
-from .constants import BLACK, ROWS, COLS, SQUARE_SIZE, WHITE, DARK_BROWN, LIGHT_BROWN, PIECE_IMG_SIZE, GREEN
-from .pieces import pieceImages
+from .constants import *
+from .pieces import *
 
 PIECE_OFFSET = (SQUARE_SIZE - PIECE_IMG_SIZE)/2
 class Board:
