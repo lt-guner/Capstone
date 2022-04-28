@@ -131,14 +131,13 @@ def main():
                         move = Move(board.selected_piece, mouse_square, engine.board)
 
                         # make a move if it is a valid move and set move_made to true
-                        for i in range(len(valid_moves)):   # can we make this if move in valid_moves?
-                            if move == valid_moves[i]:
-                                engine.make_move(valid_moves[i])
-                                move_made = True
+                        if move in valid_moves:
+                            engine.make_move(move)
+                            move_made = True
 
-                                # store Move object into data buffer to send to server
-                                global make_move
-                                make_move = move
+                            # store Move object into data buffer to send to server
+                            global make_move
+                            make_move = move
                         board.selected_piece = None
 
                     # first click: selecting a piece to move
