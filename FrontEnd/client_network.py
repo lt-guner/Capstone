@@ -1,7 +1,12 @@
 import socket
+import pickle
 from time import sleep
 from .constants import *
 
+
+class Payload:
+    def __init__(self, data):
+        self.data = data
 
 class Network:
     def __init__(self):
@@ -11,24 +16,23 @@ class Network:
 
     def connect(self):
         try:
-            print("HERE")
             self.client.connect(self.addr)
             print(CONN_SUCCESS)
             self.connected = True
-            return self.client.recv(2048).decode()
+            return pickle.loads(self.client.recv(2048))
         except:
             print("ERROR")
             pass
 
     def send(self, data):
         try:
-            self.client.send(str.encode(data))
+            self.client.send(pickle.dumps(data))
         except socket.error as e:
             self.reconnect()
 
     def receive(self):
         try:
-            return self.client.recv(2048).decode()
+            return pickle.loads(self.client.recv(2048))
         except socket.error as e:
             self.reconnect()
 
