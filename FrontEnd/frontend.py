@@ -101,9 +101,6 @@ def main():
     run = True
     clock = pygame.time.Clock()
     board = Board()
-    # get valid moves to start and move_made to False
-    valid_moves = engine.valid_moves()
-    move_made = False
 
     # connect to server and get player color
     n = Network()
