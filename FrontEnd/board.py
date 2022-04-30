@@ -6,10 +6,10 @@ from .pieces import *
 PIECE_OFFSET = (SQUARE_SIZE - PIECE_IMG_SIZE)/2
 class Board:
     def __init__(self):
+        self.piece_chosen = None
         self.board = []
-        self.selected_piece = None
-        self.red_left = self.white_left = 12
-        self.red_kings = self.white_kings = 0
+        self.black_left = self.white_left = 12
+        self.black_pc = self.white_pc = 0
 
     def draw_squares(self, win):
         win.fill(DARK_BROWN)
@@ -31,6 +31,6 @@ class Board:
         return (row,col)
 
     def draw_selected(self, win):
-        if self.selected_piece:
-            row, col = self.selected_piece
+        if self.piece_chosen:
+            row, col = self.piece_chosen
             pygame.draw.rect(win, GREEN, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
