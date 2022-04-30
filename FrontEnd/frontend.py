@@ -127,8 +127,8 @@ def main():
                 # user clicks on the board
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # second click: placing a selected piece on the board
-                    if board.selected_piece:
-                        move = Move(board.selected_piece, mouse_square, engine.board)
+                    if board.piece_chosen:
+                        move = Move(board.piece_chosen, mouse_square, engine.board)
 
                         # make a move if it is a valid move and set move_made to true
                         if move in valid_moves:
@@ -139,13 +139,13 @@ def main():
                             global make_move
                             make_move = move
                             print('UI/Engine: Storing move to send. END TURN.')
-                        board.selected_piece = None
+                        board.piece_chosen = None
 
                     # first click: selecting a piece to move
                     else:
                         row, col = mouse_square
                         if not engine.is_empty_square(row, col):
-                            board.selected_piece = mouse_square
+                            board.piece_chosen = mouse_square
 
             # opponent's turn
             else:
