@@ -5,6 +5,8 @@ from .pieces import *
 
 PIECE_OFFSET = (SQUARE_SIZE - PIECE_IMG_SIZE)/2
 class Board:
+    # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - Drawing the Board: (2020).
+    # Accessed: April 10, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=vnd3RfeG3NM
     def __init__(self):
         self.piece_chosen = None
         self.board = []
@@ -12,6 +14,8 @@ class Board:
         self.black_pc = self.white_pc = 0
 
     def draw_squares(self, win):
+    # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - Drawing the Board: (2020).
+    # Accessed: April 10, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=vnd3RfeG3NM
         win.fill(DARK_BROWN)
         for row in range(ROWS):
             for col in range(row % 2, ROWS, 2):
