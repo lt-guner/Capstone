@@ -129,7 +129,14 @@ while True:
             start_new_thread(threaded_client, (conn, playerCount))
 
         playerCount += 1
+
+    elif playerCount == 0:
+        # reset player variables; essentially prepare for a new game
+        player_data = [None, None]
+        player_connected = [False, False]
+        player_ip = [None, None]
+
+    # more than 2 players, disconnect new connections immediately
     else:
-        # more than 2 players, disconnect immediately
         conn.send(pickle.dumps(ERROR))
         conn.close()
