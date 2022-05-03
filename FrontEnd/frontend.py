@@ -100,11 +100,11 @@ def communicate_server(net_conn: Network):
 def main():
     run = True
     clock = pygame.time.Clock()
-    board = Board()
 
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
+    board = Board(player_color)
 
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
