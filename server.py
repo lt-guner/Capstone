@@ -35,9 +35,10 @@ def threaded_client(conn, playerNum):
 
     while True:
         # opponent is disconnected, tell connected player
-        if is_opponent_disconnected(playerNum):
-            conn.sendall(pickle.dumps(OPPONENT_DISCONNECTED))
-
+        # if is_opponent_disconnected(playerNum):
+        #     conn.sendall(pickle.dumps(OPPONENT_DISCONNECTED))
+        if False:
+            pass
         # evaluate message from client and send appropriate response
         else:
             try:
