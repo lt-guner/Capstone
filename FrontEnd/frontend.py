@@ -104,6 +104,7 @@ def main():
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
+    pygame.init()
     board = Board(player_color)
 
     # get valid moves to start and move_made to False
@@ -164,6 +165,7 @@ def main():
             move_made = False
 
         board.draw_squares(WIN)
+        board.draw_coords(WIN)
         board.draw_selected(WIN)
         board.draw_pieces(WIN, engine.board)
         pygame.display.update()
