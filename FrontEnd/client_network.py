@@ -39,7 +39,7 @@ class Network:
     def reconnect(self):
         print(LOST_CONN_RECONN)
         try:
-            client.connect(self.addr)
+            self.client.connect(self.addr)
             print(RECONN_SUCCESS)
         except socket.error:
             sleep(2)
