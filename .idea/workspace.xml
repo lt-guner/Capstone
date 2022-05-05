@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations">
+      <change afterPath="$PROJECT_DIR$/executable" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/client_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/client_network.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/constants.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -218,7 +220,7 @@
       <workItem from="1650819242420" duration="1712000" />
       <workItem from="1650922870477" duration="475000" />
       <workItem from="1651083174366" duration="2500000" />
-      <workItem from="1651678691761" duration="1874000" />
+      <workItem from="1651678691761" duration="3581000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
