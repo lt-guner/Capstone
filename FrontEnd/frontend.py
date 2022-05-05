@@ -122,8 +122,8 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-            # has opponent and opponent is connected and is this client's turn
-            if server_state != WAITING_FOR_OPPONENT and server_state != OPPONENT_DISCONNECTED and is_turn(player_color):
+            # server is waiting to receive a Move object, and it's this client's turn
+            if server_state == WAITING_FOR_TURN and is_turn(player_color):
                 # user clicks on the board
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # second click: placing a selected piece on the board

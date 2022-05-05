@@ -36,7 +36,7 @@ def threaded_client(conn, playerNum):
     while True:
         # opponent is disconnected, tell connected player
         # if is_opponent_disconnected(playerNum):
-        #     conn.sendall(pickle.dumps(OPPONENT_DISCONNECTED))
+        #     conn.send(pickle.dumps(OPPONENT_DISCONNECTED))
         if False:
             pass
         # evaluate message from client and send appropriate response
@@ -122,7 +122,7 @@ while True:
             print("Reconnected to:", addr, "as player 1")
             start_new_thread(threaded_client, (conn, 1))
 
-        # initial connection
+        # an initial connection
         else:
             print("Connected to:", addr, "as player", playerCount)
             player_connected[playerCount] = True
@@ -131,13 +131,13 @@ while True:
 
         playerCount += 1
 
-    elif playerCount == 0:
-        # reset player variables; essentially prepare for a new game
-        player_data = [None, None]
-        player_connected = [False, False]
-        player_ip = [None, None]
-
     # more than 2 players, disconnect new connections immediately
     else:
         conn.send(pickle.dumps(ERROR))
         conn.close()
+
+    # both players disconnected or quit, reset data buffers for a new game
+    if player_connected[0] is None and player_connected[1] is None:
+        player_data = [None, None]
+        player_connected = [False, False]
+        player_ip = [None, None]
