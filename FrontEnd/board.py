@@ -8,6 +8,7 @@ PIECE_OFFSET = (SQUARE_SIZE - PIECE_IMG_SIZE)/2
 
 
 class Board:
+    """Creates the board as well as controls resources needed to draw the board on the screen."""
     # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - Drawing the Board: (2020).
     # Accessed: April 10, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=vnd3RfeG3NM
     def __init__(self, player_color):
@@ -20,12 +21,15 @@ class Board:
 
     # Flips the board for the black player
     def virt_coords(self, row, col):
+        """Depending on which player the board is being viewed by, the direction of the board must be turned appropriately.
+        This function transfroms the board coordinates into a virtual coordinate for drawing the correct orientation."""
         if self.player_color == WHITE:
             return row, col
         else:
             return ROWS-row-1, COLS-col-1
 
     def draw_squares(self, win):
+        """Draws squares on the board"""
     # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - Drawing the Board: (2020).
     # Accessed: April 10, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=vnd3RfeG3NM
         win.fill(DARK_BROWN)
@@ -34,6 +38,7 @@ class Board:
                 pygame.draw.rect(win, LIGHT_BROWN, (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def draw_coords(self, win):
+        """Draws the coordinates labels on the board. These are flipped depending on which player is viewing the board."""
         # Determine Coord order
         if self.player_color == WHITE:
             nums, lets = range(8,0,-1), ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -58,6 +63,7 @@ class Board:
 
 
     def draw_pieces(self, win, layout):
+        """Draws the Chess game pieces onto the board. Also flips the orientation to match board view."""
         for row in range(ROWS):
             for col in range(COLS):
                 piece = layout[row][col]
@@ -67,12 +73,15 @@ class Board:
                     win.blit(pieceImages[piece], (vcol * SQUARE_SIZE + PIECE_OFFSET, vrow * SQUARE_SIZE + PIECE_OFFSET))
 
     def get_mouse_square(self):
+        """Returns the current square that the mouse cursor is located in.
+        Also inverts the coordinates depending on board view."""
         mouse_coords = pygame.mouse.get_pos()
         # Transforming the coordinates for player view
         vrow, vcol = self.virt_coords(mouse_coords[1]//SQUARE_SIZE, mouse_coords[0]//SQUARE_SIZE)
         return (vrow,vcol)
 
     def draw_selected(self, win):
+        """Draws a green box on the selected square tile on the board."""
         if self.piece_chosen:
             # Transforming the coordinates for player view
             vrow, vcol = self.virt_coords(*self.piece_chosen)
