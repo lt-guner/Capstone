@@ -100,11 +100,12 @@ def communicate_server(net_conn: Network):
 def main():
     run = True
     clock = pygame.time.Clock()
-    board = Board()
 
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
+    pygame.init()
+    board = Board(player_color)
 
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
@@ -116,9 +117,11 @@ def main():
         # get message from server regarding game state
         server_state = communicate_server(n)
 
+        # What coordinates the mouse is in
         mouse_square = board.get_mouse_square()
 
         for event in pygame.event.get():
+            # Allows the user to quit the game when they hit the exit button
             if event.type == pygame.QUIT:
                 run = False
 
@@ -144,6 +147,7 @@ def main():
                     # first click: selecting a piece to move
                     else:
                         row, col = mouse_square
+                        # Won't allow a user to click on empty square
                         if not engine.is_empty_square(row, col):
                             board.piece_chosen = mouse_square
 
@@ -163,7 +167,9 @@ def main():
             valid_moves = engine.valid_moves()
             move_made = False
 
+        # Draws the board
         board.draw_squares(WIN)
+        board.draw_coords(WIN)
         board.draw_selected(WIN)
         board.draw_pieces(WIN, engine.board)
         pygame.display.update()

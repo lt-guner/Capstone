@@ -2,6 +2,7 @@ WIDTH, HEIGHT = 600, 600
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH//COLS
 PIECE_IMG_SIZE = 60
+COORD_FONT_SIZE = 20
 
 RED = (255,0,0)
 #WHITE = (255,255,255)
@@ -18,7 +19,7 @@ BLACK = 'b'
 
 # constants for sockets
 # socket connection parameters
-SERVER = '128.193.36.41'     # change to ip address of where server is run
+SERVER = 'localhost'     # change to ip address of where server is run
 PORT = 5555
 
 # server-to-client messages

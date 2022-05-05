@@ -4,16 +4,32 @@ from .constants import *
 from .pieces import *
 
 PIECE_OFFSET = (SQUARE_SIZE - PIECE_IMG_SIZE)/2
+
+
+
 class Board:
+    """Creates the board as well as controls resources needed to draw the board on the screen."""
     # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - Drawing the Board: (2020).
     # Accessed: April 10, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=vnd3RfeG3NM
-    def __init__(self):
+    def __init__(self, player_color):
         self.piece_chosen = None
         self.board = []
         self.black_left = self.white_left = 12
         self.black_pc = self.white_pc = 0
+        self.player_color = player_color
+        self.font = pygame.font.SysFont('Arial', COORD_FONT_SIZE)
+
+    # Flips the board for the black player
+    def virt_coords(self, row, col):
+        """Depending on which player the board is being viewed by, the direction of the board must be turned appropriately.
+        This function transfroms the board coordinates into a virtual coordinate for drawing the correct orientation."""
+        if self.player_color == WHITE:
+            return row, col
+        else:
+            return ROWS-row-1, COLS-col-1
 
     def draw_squares(self, win):
+        """Draws squares on the board"""
     # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - Drawing the Board: (2020).
     # Accessed: April 10, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=vnd3RfeG3NM
         win.fill(DARK_BROWN)
@@ -21,20 +37,54 @@ class Board:
             for col in range(row % 2, ROWS, 2):
                 pygame.draw.rect(win, LIGHT_BROWN, (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
+    def draw_coords(self, win):
+        """Draws the coordinates labels on the board. These are flipped depending on which player is viewing the board."""
+        # Determine Coord order
+        if self.player_color == WHITE:
+            nums, lets = range(8,0,-1), ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+        else:
+            nums, lets = range(1,9), ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
+
+        # Draw Numbers on the left
+        for i, n in enumerate(nums):
+            if (i%2):
+                n_text = self.font.render(str(n), True, LIGHT_BROWN)
+            else:
+                n_text = self.font.render(str(n), True, DARK_BROWN)
+            win.blit(n_text, (0, i * SQUARE_SIZE))
+
+        # Draw Letters on the bottom
+        for i, n in enumerate(lets):
+            if (i%2):
+                n_text = self.font.render(str(n), True, DARK_BROWN)
+            else:
+                n_text = self.font.render(str(n), True, LIGHT_BROWN)
+            win.blit(n_text, (i * SQUARE_SIZE, HEIGHT - COORD_FONT_SIZE))
+
+
     def draw_pieces(self, win, layout):
+        """Draws the Chess game pieces onto the board. Also flips the orientation to match board view."""
         for row in range(ROWS):
             for col in range(COLS):
                 piece = layout[row][col]
                 if piece != None:
-                    win.blit(pieceImages[piece], (col * SQUARE_SIZE + PIECE_OFFSET, row * SQUARE_SIZE + PIECE_OFFSET))
+                    # Transforming the coordinates for player view
+                    vrow, vcol = self.virt_coords(row, col)
+                    win.blit(pieceImages[piece], (vcol * SQUARE_SIZE + PIECE_OFFSET, vrow * SQUARE_SIZE + PIECE_OFFSET))
 
     def get_mouse_square(self):
+        """Returns the current square that the mouse cursor is located in.
+        Also inverts the coordinates depending on board view."""
         mouse_coords = pygame.mouse.get_pos()
-        col = mouse_coords[0]//SQUARE_SIZE
-        row = mouse_coords[1]//SQUARE_SIZE
-        return (row,col)
+        # Transforming the coordinates for player view
+        vrow, vcol = self.virt_coords(mouse_coords[1]//SQUARE_SIZE, mouse_coords[0]//SQUARE_SIZE)
+        return (vrow,vcol)
 
     def draw_selected(self, win):
+        """Draws a green box on the selected square tile on the board."""
         if self.piece_chosen:
-            row, col = self.piece_chosen
-            pygame.draw.rect(win, GREEN, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+            # Transforming the coordinates for player view
+            vrow, vcol = self.virt_coords(*self.piece_chosen)
+            pygame.draw.rect(win, GREEN, (vcol * SQUARE_SIZE, vrow * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
+
