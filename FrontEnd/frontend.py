@@ -104,6 +104,9 @@ def communicate_server(net_conn: Network):
     except:
         pass
 
+def is_game_over(engine: ChessEngine):
+    return engine.checkmate or engine.stalemate
+
 def draw_board(board: Board, engine: ChessEngine):
     """
     Draws the current chess board state and updates the rendered image.
@@ -172,17 +175,21 @@ def draw_sel_menu(clock):
         # update display
 
 
-
 def play_singleplayer(clock, difficulty):
     """
     Executes a game of chess against a computer AI
     """
-    player_color = WHITE  # do we want to implement a color selection?
+    player_color = WHITE  # do we want to implement a color selection? (display after selecting difficulty in draw_sel_menu)
     engine = ChessEngine()
     board = Board(player_color)
 
-    # initiate AI class here
-    # use difficulty argument to decide which AI difficulty to use
+    # initialize AI according to difficulty
+    # if difficulty == EAS_DIFF:
+        # initialize easy AI
+    # elif difficulty == MED_DIFF:
+        # initialize medium AI
+    # else:
+        # initialize hard AI
 
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
@@ -203,7 +210,7 @@ def play_singleplayer(clock, difficulty):
                 return
 
             # game is not over
-            if not (engine.checkmate or engine.stalemate):
+            if not is_game_over(engine):
                 if is_turn(player_color, engine):
                     # user clicks on the board
                     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -239,6 +246,8 @@ def play_singleplayer(clock, difficulty):
                     move_made = False
 
         draw_board(board, engine)
+        # if is_game_over(engine):
+            # draw game over message on UI
 
 def play_multiplayer(clock):
     """
@@ -275,7 +284,7 @@ def play_multiplayer(clock):
                 return
 
             # game is not over
-            if not (engine.checkmate or engine.stalemate):
+            if not is_game_over(engine):
                 # server is waiting to receive a Move object, and it's this client's turn
                 if server_state == WAITING_FOR_TURN and is_turn(player_color, engine):
                     # user clicks on the board
@@ -319,6 +328,9 @@ def play_multiplayer(clock):
                     move_made = False
 
         draw_board(board, engine)
+        # if is_game_over(engine):
+            # draw game over message on UI
+
 
 # set window parameters and caption name
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
@@ -340,7 +352,7 @@ def main():
         if game_state == SEL_MENU:
             draw_sel_menu(clock)
         elif game_state == SINGLE_PLAY:
-            play_singleplayer(clock, difficulty)
+            play_singleplayer(clock, ai_difficulty)
         if game_state == ONLINE_PLAY:
             play_multiplayer(clock)
 
