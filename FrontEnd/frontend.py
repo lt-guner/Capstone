@@ -105,20 +105,150 @@ def communicate_server(net_conn: Network):
         pass
 
 def draw_board(board: Board, engine: ChessEngine):
+    """
+    Draws the current chess board state and updates the rendered image.
+    """
     # Draws the board
     board.draw_squares(WIN)
     board.draw_coords(WIN)
     board.draw_selected(WIN)
     board.draw_pieces(WIN, engine.board)
+
+    if engine.checkmate:
+        # draw checkmate text
+        pass
+    elif engine.stalemate:
+        # draw stalemate text
+        pass
+
     pygame.display.update()
 
+def draw_sel_menu(clock):
+    """
+    Draws the menu for the user to select single player or multiplayer
+    """
+    while game_state == SEL_MENU:
+        render_ai_difficulty = False
+        # get mouse coordinates
+
+        for event in pygame.event.get():
+            # Allows the user to quit the game when they hit the exit button
+            if event.type == pygame.QUIT:
+                global run
+                run = False
+                return
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                pass
+                # if render_ai_difficulty is False:
+                    # if mouse location is for single player:
+                        # render_ai_difficulty = True
+                    # elif mouse location is for online multiplayer:
+                        # global game_state
+                        # game_state = ONLINE_PLAY
+                        # return
+                # else:
+                    # if mouse location is for easy difficulty:
+                        # global ai_difficulty
+                        # ai_difficulty = EAS_DIFF
+                        # global game_state
+                        # game_state = SINGLE_PLAY
+                    # if mouse location is for medium difficulty:
+                        # global ai_difficulty:
+                        # ai_difficulty = MED_DIFF
+                        # global game_state
+                        # game_state = SINGLE_PLAY
+                    # if mouse location is for hard difficulty:
+                        # global ai_difficulty:
+                        # ai_difficulty = HAR_DIFF
+                        # global game_state
+                        # game_state = SINGLE_PLAY
+
+        # draw select menu UI elements
+        # if render_ai_difficulty:
+            # draw the difficulty options
+        # else:
+            # draw single player vs AI / online vs player options
+        # update display
+
+
+
+def play_singleplayer(clock, difficulty):
+    """
+    Executes a game of chess against a computer AI
+    """
+    player_color = WHITE  # do we want to implement a color selection?
+    engine = ChessEngine()
+    board = Board(player_color)
+
+    # initiate AI class here
+    # use difficulty argument to decide which AI difficulty to use
+
+    # get valid moves to start and move_made to False
+    valid_moves = engine.valid_moves()
+    move_made = False
+
+    global game_state
+    while game_state == SINGLE_PLAY:
+        clock.tick(FPS)
+
+        # What coordinates the mouse is in
+        mouse_square = board.get_mouse_square()
+
+        for event in pygame.event.get():
+            # Allows the user to quit the game when they hit the exit button
+            if event.type == pygame.QUIT:
+                global run
+                run = False
+                return
+
+            # game is not over
+            if not (engine.checkmate or engine.stalemate):
+                if is_turn(player_color, engine):
+                    # user clicks on the board
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        # second click: placing a selected piece on the board
+                        if board.piece_chosen:
+                            move = Move(board.piece_chosen, mouse_square, engine.board)
+
+                            # make a move if it is a valid move and set move_made to true
+                            if move in valid_moves:
+                                engine.make_move(move)
+                                move_made = True
+
+                                # store Move object into data buffer to send to server
+                                global make_move
+                                make_move = move
+                                print('UI/Engine: Storing move to send. END TURN.')
+                            board.piece_chosen = None
+
+                        # first click: selecting a piece to move
+                        else:
+                            row, col = mouse_square
+                            # Won't allow a user to click on empty square
+                            if not engine.is_empty_square(row, col):
+                                board.piece_chosen = mouse_square
+                # AI executes turn
+                else:
+                    # AI makes a moves
+                    pass
+
+                # get the next set of valid moves and reset move_made
+                if move_made:
+                    valid_moves = engine.valid_moves()
+                    move_made = False
+
+        draw_board(board, engine)
+
 def play_multiplayer(clock):
+    """
+    Executes a game of chess against another player online
+    """
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
     if player_color is None:
         return
-        # server was full. print informative message
 
     engine = ChessEngine()
     board = Board(player_color)
@@ -144,47 +274,49 @@ def play_multiplayer(clock):
                 run = False
                 return
 
-            # server is waiting to receive a Move object, and it's this client's turn
-            if server_state == WAITING_FOR_TURN and is_turn(player_color, engine):
-                # user clicks on the board
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # second click: placing a selected piece on the board
-                    if board.piece_chosen:
-                        move = Move(board.piece_chosen, mouse_square, engine.board)
+            # game is not over
+            if not (engine.checkmate or engine.stalemate):
+                # server is waiting to receive a Move object, and it's this client's turn
+                if server_state == WAITING_FOR_TURN and is_turn(player_color, engine):
+                    # user clicks on the board
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        # second click: placing a selected piece on the board
+                        if board.piece_chosen:
+                            move = Move(board.piece_chosen, mouse_square, engine.board)
 
-                        # make a move if it is a valid move and set move_made to true
-                        if move in valid_moves:
-                            engine.make_move(move)
-                            move_made = True
+                            # make a move if it is a valid move and set move_made to true
+                            if move in valid_moves:
+                                engine.make_move(move)
+                                move_made = True
 
-                            # store Move object into data buffer to send to server
-                            global make_move
-                            make_move = move
-                            print('UI/Engine: Storing move to send. END TURN.')
-                        board.piece_chosen = None
+                                # store Move object into data buffer to send to server
+                                global make_move
+                                make_move = move
+                                print('UI/Engine: Storing move to send. END TURN.')
+                            board.piece_chosen = None
 
-                    # first click: selecting a piece to move
-                    else:
-                        row, col = mouse_square
-                        # Won't allow a user to click on empty square
-                        if not engine.is_empty_square(row, col):
-                            board.piece_chosen = mouse_square
+                        # first click: selecting a piece to move
+                        else:
+                            row, col = mouse_square
+                            # Won't allow a user to click on empty square
+                            if not engine.is_empty_square(row, col):
+                                board.piece_chosen = mouse_square
 
-            # opponent's turn
-            else:
-                global opponent_move
-                # opponent's move data buffer contains data (Move object)
-                if opponent_move is not None:
-                    print('UI/Engine: Making opponent move. START TURN.')
-                    move_made = True
-                    # make the move in the engine and clear the data buffer
-                    engine.make_move(opponent_move)
-                    opponent_move = None
+                # opponent's turn
+                else:
+                    global opponent_move
+                    # opponent's move data buffer contains data (Move object)
+                    if opponent_move is not None:
+                        print('UI/Engine: Making opponent move. START TURN.')
+                        move_made = True
+                        # make the move in the engine and clear the data buffer
+                        engine.make_move(opponent_move)
+                        opponent_move = None
 
-        # get the next set of valid moves and reset move_made
-        if move_made:
-            valid_moves = engine.valid_moves()
-            move_made = False
+                # get the next set of valid moves and reset move_made
+                if move_made:
+                    valid_moves = engine.valid_moves()
+                    move_made = False
 
         draw_board(board, engine)
 
@@ -197,14 +329,18 @@ make_move = None        # this client has made a move to send to opponent
 opponent_move = None    # received move made by opponent
 
 run = True
-game_state = ONLINE_PLAY
+game_state = ONLINE_PLAY        # change to SEL_MENU when implemented
+ai_difficulty = None
 
 def main():
     clock = pygame.time.Clock()
     pygame.init()   # create the game window
 
     while run:
-
+        if game_state == SEL_MENU:
+            draw_sel_menu(clock)
+        elif game_state == SINGLE_PLAY:
+            play_singleplayer(clock, difficulty)
         if game_state == ONLINE_PLAY:
             play_multiplayer(clock)
 
