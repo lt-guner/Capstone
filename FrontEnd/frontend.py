@@ -131,6 +131,8 @@ def draw_sel_menu(clock):
     Draws the menu for the user to select single player or multiplayer
     """
     while game_state == SEL_MENU:
+        clock.tick(FPS)
+        
         render_ai_difficulty = False
         # get mouse coordinates
 
