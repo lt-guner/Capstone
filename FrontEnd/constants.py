@@ -1,3 +1,5 @@
+FPS = 60
+WIN_NAME = 'Chess'
 WIDTH, HEIGHT = 600, 600
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH//COLS
@@ -12,6 +14,9 @@ DARK_BROWN = (209, 139, 71)
 LIGHT_BROWN = (255, 206, 158)
 GREEN = (0,255,0)
 
+SEL_MENU = 'select menu'
+SINGLE_PLAY = 'single player'
+ONLINE_PLAY = 'online play'
 
 # constants for chess game (add chess engine constants here)
 WHITE = 'w'

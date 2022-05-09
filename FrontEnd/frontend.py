@@ -8,19 +8,11 @@ from Chess.move import Move
 
 from .client_network import Network
 
-engine = ChessEngine()
-
-FPS = 60
-
-WIN = pygame.display.set_mode((WIDTH,HEIGHT))
-
-pygame.display.set_caption('Chess')
-
-# buffer to store move data
-make_move = None        # this client has made a move to send to opponent
-opponent_move = None    # received move made by opponent
-
 def get_player_color(data):
+    """
+    Returns a string of the player color.
+    Determined by parsing the initial string message upon connecting with the server.
+    """
     if data[-1] == '0':
         print('Player Color: White')
         return WHITE
@@ -28,7 +20,11 @@ def get_player_color(data):
         print('Player Color: Black')
         return BLACK
 
-def is_turn(color):
+def is_turn(color, engine: ChessEngine):
+    """
+    Returns True if the inputted string color is the turn player in the game engine.
+    Otherwise returns False.
+    """
     if color == WHITE and engine.white_turn:
         return True
     if color == BLACK and not engine.white_turn:
@@ -36,11 +32,16 @@ def is_turn(color):
     return False
 
 def init_connect(network):
+    """
+    Returns a string of the player color. Returns None if connection error.
+    Initializes a network connection with the server for online multiplayer.
+    """
     # establish connection and receive first message with this client's color
     connect_message = network.connect()
 
     if connect_message == ERROR:
         print(GAME_FULL)
+        return None
     else:
         print(connect_message)
 
@@ -51,6 +52,12 @@ def init_connect(network):
         return get_player_color(connect_message)
 
 def communicate_server(net_conn: Network):
+    """
+    Returns the data received from the server.
+    Receives data from the server.
+    Determines appropriate response according to UI and engine states.
+    Sends the response to the server.
+    """
     try:
         reply = net_conn.receive()
 
@@ -97,21 +104,31 @@ def communicate_server(net_conn: Network):
     except:
         pass
 
-def main():
-    run = True
-    clock = pygame.time.Clock()
+def draw_board(board: Board, engine: ChessEngine):
+    # Draws the board
+    board.draw_squares(WIN)
+    board.draw_coords(WIN)
+    board.draw_selected(WIN)
+    board.draw_pieces(WIN, engine.board)
+    pygame.display.update()
 
+def play_multiplayer(clock):
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
-    pygame.init()
+    if player_color is None:
+        return
+        # server was full. print informative message
+
+    engine = ChessEngine()
     board = Board(player_color)
 
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
     move_made = False
 
-    while run:
+    global game_state
+    while game_state == ONLINE_PLAY:
         clock.tick(FPS)
 
         # get message from server regarding game state
@@ -123,10 +140,12 @@ def main():
         for event in pygame.event.get():
             # Allows the user to quit the game when they hit the exit button
             if event.type == pygame.QUIT:
+                global run
                 run = False
+                return
 
             # server is waiting to receive a Move object, and it's this client's turn
-            if server_state == WAITING_FOR_TURN and is_turn(player_color):
+            if server_state == WAITING_FOR_TURN and is_turn(player_color, engine):
                 # user clicks on the board
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # second click: placing a selected piece on the board
@@ -167,11 +186,26 @@ def main():
             valid_moves = engine.valid_moves()
             move_made = False
 
-        # Draws the board
-        board.draw_squares(WIN)
-        board.draw_coords(WIN)
-        board.draw_selected(WIN)
-        board.draw_pieces(WIN, engine.board)
-        pygame.display.update()
+        draw_board(board, engine)
+
+# set window parameters and caption name
+WIN = pygame.display.set_mode((WIDTH,HEIGHT))
+pygame.display.set_caption(WIN_NAME)
+
+# buffer to store move data
+make_move = None        # this client has made a move to send to opponent
+opponent_move = None    # received move made by opponent
+
+run = True
+game_state = ONLINE_PLAY
+
+def main():
+    clock = pygame.time.Clock()
+    pygame.init()   # create the game window
+
+    while run:
+
+        if game_state == ONLINE_PLAY:
+            play_multiplayer(clock)
 
     pygame.quit
