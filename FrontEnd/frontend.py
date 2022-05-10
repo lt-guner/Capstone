@@ -132,7 +132,7 @@ def draw_sel_menu(clock):
     """
     while game_state == SEL_MENU:
         clock.tick(FPS)
-        
+
         render_ai_difficulty = False
         # get mouse coordinates
 
@@ -143,7 +143,7 @@ def draw_sel_menu(clock):
                 run = False
                 return
 
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 pass
                 # if render_ai_difficulty is False:
                     # if mouse location is for single player:
@@ -174,8 +174,8 @@ def draw_sel_menu(clock):
             # draw the difficulty options
         # else:
             # draw single player vs AI / online vs player options
-        # update display
 
+        # update display
 
 def play_singleplayer(clock, difficulty):
     """
@@ -185,13 +185,7 @@ def play_singleplayer(clock, difficulty):
     engine = ChessEngine()
     board = Board(player_color)
 
-    # initialize AI according to difficulty
-    # if difficulty == EAS_DIFF:
-        # initialize easy AI
-    # elif difficulty == MED_DIFF:
-        # initialize medium AI
-    # else:
-        # initialize hard AI
+    # initialize AI class
 
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
@@ -239,7 +233,14 @@ def play_singleplayer(clock, difficulty):
                                 board.piece_chosen = mouse_square
                 # AI executes turn
                 else:
-                    # AI makes a moves
+                    # AI makes a move
+                    # if difficulty == EAS_DIFF:
+                        # AI makes easy move
+                    # elif difficulty == MED_DIFF:
+                        # AI makes med move
+                    # else:
+                        # AI makes hard move
+                    move_made = True
                     pass
 
                 # get the next set of valid moves and reset move_made
@@ -247,9 +248,16 @@ def play_singleplayer(clock, difficulty):
                     valid_moves = engine.valid_moves()
                     move_made = False
 
+            # game is over, prompt user to return to select menu
+            # else:
+                # if event.type == pygame.MOUSEBUTTONDOWN:
+                    # if mouse coordinates is on "go back to menu" button:
+                        # game_state = SEL_MENU
+
         draw_board(board, engine)
         # if is_game_over(engine):
             # draw game over message on UI
+            # draw a "go back to menu" button
 
 def play_multiplayer(clock):
     """
@@ -259,6 +267,8 @@ def play_multiplayer(clock):
     n = Network()
     player_color = init_connect(n)
     if player_color is None:
+        global game_state
+        game_state = SEL_MENU
         return
 
     engine = ChessEngine()
@@ -286,7 +296,7 @@ def play_multiplayer(clock):
                 return
 
             # game is not over
-            if not is_game_over(engine):
+            if not is_game_over(engine): # will exist in ChessEngine
                 # server is waiting to receive a Move object, and it's this client's turn
                 if server_state == WAITING_FOR_TURN and is_turn(player_color, engine):
                     # user clicks on the board
@@ -329,9 +339,16 @@ def play_multiplayer(clock):
                     valid_moves = engine.valid_moves()
                     move_made = False
 
+            # game is over, prompt user to return to select menu
+            # else:
+                # if event.type == pygame.MOUSEBUTTONDOWN:
+                    # if mouse coordinates is on "go back to menu" button:
+                        # game_state = SEL_MENU
+
         draw_board(board, engine)
         # if is_game_over(engine):
             # draw game over message on UI
+            # draw a "go back to menu" button
 
 
 # set window parameters and caption name
@@ -355,7 +372,7 @@ def main():
             draw_sel_menu(clock)
         elif game_state == SINGLE_PLAY:
             play_singleplayer(clock, ai_difficulty)
-        if game_state == ONLINE_PLAY:
+        elif game_state == ONLINE_PLAY:
             play_multiplayer(clock)
 
     pygame.quit

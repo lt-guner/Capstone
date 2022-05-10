@@ -15,7 +15,7 @@ LIGHT_BROWN = (255, 206, 158)
 GREEN = (0,255,0)
 
 SEL_MENU = 'select menu'
-SINGLE_PLAY = 'single player'
+SINGLE_PLAY = 'single play'
 ONLINE_PLAY = 'online play'
 
 EAS_DIFF = 'easy AI'
