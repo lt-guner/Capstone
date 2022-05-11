@@ -61,9 +61,9 @@ def communicate_server(net_conn: Network):
     try:
         reply = net_conn.receive()
 
-        # opponent disconnected. stay ready, waiting for opponent to reconnect
+        # opponent disconnected. disconnect from server
         if reply == OPPONENT_DISCONNECTED:
-            payload = READY
+            net_conn.close()
 
         # server is waiting for an opponent to connect
         elif reply == WAITING_FOR_OPPONENT:
@@ -266,6 +266,9 @@ def play_multiplayer(clock):
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
+    opponent_connected = True
+
+    # connection error, return to select menu
     if player_color is None:
         global game_state
         game_state = SEL_MENU
@@ -284,6 +287,10 @@ def play_multiplayer(clock):
 
         # get message from server regarding game state
         server_state = communicate_server(n)
+
+        # opponent disconnected, return to select menu
+        if server_state == OPPONENT_DISCONNECTED:
+            opponent_connected = False
 
         # What coordinates the mouse is in
         mouse_square = board.get_mouse_square()
@@ -348,6 +355,9 @@ def play_multiplayer(clock):
         draw_board(board, engine)
         # if is_game_over(engine):
             # draw game over message on UI
+            # draw a "go back to menu" button
+        # elif opponent_connected is False:
+            # draw opponent disconnected message on UI
             # draw a "go back to menu" button
 
 

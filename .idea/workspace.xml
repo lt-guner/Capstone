@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/client_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/client_network.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FrontEnd/frontend.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/frontend.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -222,7 +223,8 @@
       <workItem from="1651678691761" duration="9097000" />
       <workItem from="1651779656328" duration="130000" />
       <workItem from="1652048727385" duration="13111000" />
-      <workItem from="1652143511624" duration="418000" />
+      <workItem from="1652143511624" duration="601000" />
+      <workItem from="1652156297402" duration="3020000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />

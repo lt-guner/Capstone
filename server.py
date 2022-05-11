@@ -35,10 +35,11 @@ def threaded_client(conn, playerNum):
 
     while True:
         # opponent is disconnected, tell connected player
-        # if is_opponent_disconnected(playerNum):
-        #     conn.send(pickle.dumps(OPPONENT_DISCONNECTED))
-        if False:
-            pass
+        if is_opponent_disconnected(playerNum):
+            conn.send(pickle.dumps(OPPONENT_DISCONNECTED))
+            print("Player " +  str(playerNum) + "'s opponent has disconnected")
+            break
+
         # evaluate message from client and send appropriate response
         else:
             try:
@@ -94,9 +95,9 @@ def threaded_client(conn, playerNum):
                 conn.sendall(pickle.dumps(reply))
 
             except:
+                print("Lost connection with player", playerNum)
                 break
 
-    print("Lost connection")
     conn.close()
 
     # player disconnected, updates playerNum and player_connected variables
@@ -108,36 +109,23 @@ def threaded_client(conn, playerNum):
 playerCount = 0
 player_data = [None, None]          # stores move data received from the turn player
 player_connected = [False, False]   # boolean for whether players have connected
-player_ip = [None, None]
 
 while True:
+    # both players disconnected or quit, reset data buffers for a new game
+    if player_connected[0] is None and player_connected[1] is None:
+        player_data = [None, None]
+        player_connected = [False, False]
+
     conn, addr = s.accept()
-
     if playerCount <= 1:
-        # check if a player is reconnecting (has the same ip address)
-        if player_connected[0] is False and addr == player_ip[0]:
-            print("Reconnected to:", addr, "as player 0")
-            start_new_thread(threaded_client, (conn, 0))
-        elif player_connected[1] is False and addr == player_ip[1]:
-            print("Reconnected to:", addr, "as player 1")
-            start_new_thread(threaded_client, (conn, 1))
-
-        # an initial connection
-        else:
             print("Connected to:", addr, "as player", playerCount)
             player_connected[playerCount] = True
             player_ip[playerCount] = addr
             start_new_thread(threaded_client, (conn, playerCount))
-
-        playerCount += 1
+            playerCount += 1
 
     # more than 2 players, disconnect new connections immediately
     else:
         conn.send(pickle.dumps(ERROR))
         conn.close()
 
-    # both players disconnected or quit, reset data buffers for a new game
-    if player_connected[0] is None and player_connected[1] is None:
-        player_data = [None, None]
-        player_connected = [False, False]
-        player_ip = [None, None]
