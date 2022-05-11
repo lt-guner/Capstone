@@ -15,12 +15,13 @@ LIGHT_BROWN = (255, 206, 158)
 GREEN = (0,255,0)
 
 SEL_MENU = 'select menu'
-SINGLE_PLAY = 'single play'
-ONLINE_PLAY = 'online play'
+SINGLE_PLAY = 'Single Player vs. AI'
+ONLINE_PLAY = 'Online Multiplayer'
 
-EAS_DIFF = 'easy AI'
-MED_DIFF = 'medium AI'
-HAR_DIFF = 'hard AI'
+
+EAS_DIFF = 'Easy AI'
+MED_DIFF = 'Medium AI'
+HAR_DIFF = 'Hard AI'
 
 # constants for chess game (add chess engine constants here)
 WHITE = 'w'

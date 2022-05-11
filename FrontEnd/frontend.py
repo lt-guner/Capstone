@@ -63,7 +63,7 @@ def communicate_server(net_conn: Network):
 
         # opponent disconnected. disconnect from server
         if reply == OPPONENT_DISCONNECTED:
-            net_conn.close()
+            payload = READY
 
         # server is waiting for an opponent to connect
         elif reply == WAITING_FOR_OPPONENT:
@@ -130,11 +130,49 @@ def draw_sel_menu(clock):
     """
     Draws the menu for the user to select single player or multiplayer
     """
+    render_ai_difficulty = False
+    global ai_difficulty
+    global game_state
+
     while game_state == SEL_MENU:
         clock.tick(FPS)
 
-        render_ai_difficulty = False
         # get mouse coordinates
+        mouse_coords = pygame.mouse.get_pos()
+
+        # text style
+        font = pygame.font.SysFont('Arial', 30)
+
+        WIN.fill((0, 0, 0))
+
+        # draw select AI difficulty options
+        if render_ai_difficulty:
+            easy_diff_text = font.render(EAS_DIFF, True, DARK_BROWN, LIGHT_BROWN)
+            easy_diff_rect = easy_diff_text.get_rect(center=(WIDTH / 2, HEIGHT / 3))
+
+            med_diff_text = font.render(MED_DIFF, True, DARK_BROWN, LIGHT_BROWN)
+            med_diff_rect = med_diff_text.get_rect(center=(WIDTH / 2, (1.5 * HEIGHT) / 3))
+
+            hard_diff_text = font.render(HAR_DIFF, True, DARK_BROWN, LIGHT_BROWN)
+            hard_diff_rect = hard_diff_text.get_rect(center=(WIDTH / 2, (2 * HEIGHT) / 3))
+
+            WIN.blit(easy_diff_text, easy_diff_rect)
+            WIN.blit(med_diff_text, med_diff_rect)
+            WIN.blit(hard_diff_text, hard_diff_rect)
+
+        # draw single player vs AI / online vs player options
+        else:
+            single_play_text = font.render(SINGLE_PLAY, True, DARK_BROWN, LIGHT_BROWN)
+            single_play_rect = single_play_text.get_rect(center=(WIDTH / 2, HEIGHT / 3))
+
+            multi_play_text = font.render(ONLINE_PLAY, True, DARK_BROWN, LIGHT_BROWN)
+            multi_play_rect = multi_play_text.get_rect(center=(WIDTH / 2, (2 * HEIGHT) / 3))
+
+            WIN.blit(single_play_text, single_play_rect)
+            WIN.blit(multi_play_text, multi_play_rect)
+
+        # update display
+        pygame.display.update()
 
         for event in pygame.event.get():
             # Allows the user to quit the game when they hit the exit button
@@ -144,38 +182,28 @@ def draw_sel_menu(clock):
                 return
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pass
-                # if render_ai_difficulty is False:
-                    # if mouse location is for single player:
-                        # render_ai_difficulty = True
-                    # elif mouse location is for online multiplayer:
-                        # global game_state
-                        # game_state = ONLINE_PLAY
-                        # return
-                # else:
-                    # if mouse location is for easy difficulty:
-                        # global ai_difficulty
-                        # ai_difficulty = EAS_DIFF
-                        # global game_state
+                # detect mouse click to select AI difficulty
+                if render_ai_difficulty:
+                    if easy_diff_rect.collidepoint(mouse_coords):
+                        ai_difficulty = EAS_DIFF
+                        print(ai_difficulty)
                         # game_state = SINGLE_PLAY
-                    # if mouse location is for medium difficulty:
-                        # global ai_difficulty:
-                        # ai_difficulty = MED_DIFF
-                        # global game_state
+                    elif med_diff_rect.collidepoint(mouse_coords):
+                        ai_difficulty = MED_DIFF
                         # game_state = SINGLE_PLAY
-                    # if mouse location is for hard difficulty:
-                        # global ai_difficulty:
-                        # ai_difficulty = HAR_DIFF
-                        # global game_state
+                        print(ai_difficulty)
+                    elif hard_diff_rect.collidepoint(mouse_coords):
+                        ai_difficulty = HAR_DIFF
                         # game_state = SINGLE_PLAY
+                        print(ai_difficulty)
 
-        # draw select menu UI elements
-        # if render_ai_difficulty:
-            # draw the difficulty options
-        # else:
-            # draw single player vs AI / online vs player options
+                # detect mouse click to select single vs online play
+                else:
+                    if single_play_rect.collidepoint(mouse_coords):
+                        render_ai_difficulty = True
 
-        # update display
+                    elif multi_play_rect.collidepoint(mouse_coords):
+                        game_state = ONLINE_PLAY
 
 def play_singleplayer(clock, difficulty):
     """
@@ -263,6 +291,8 @@ def play_multiplayer(clock):
     """
     Executes a game of chess against another player online
     """
+    global game_state
+
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
@@ -270,7 +300,6 @@ def play_multiplayer(clock):
 
     # connection error, return to select menu
     if player_color is None:
-        global game_state
         game_state = SEL_MENU
         return
 
@@ -280,86 +309,102 @@ def play_multiplayer(clock):
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
     move_made = False
+    ok_button = None
 
-    global game_state
     while game_state == ONLINE_PLAY:
         clock.tick(FPS)
 
-        # get message from server regarding game state
-        server_state = communicate_server(n)
+        try:
+            # get message from server regarding game state
+            server_state = communicate_server(n)
 
-        # opponent disconnected, return to select menu
-        if server_state == OPPONENT_DISCONNECTED:
-            opponent_connected = False
+            # opponent disconnected, return to select menu
+            if server_state == OPPONENT_DISCONNECTED:
+                opponent_connected = False
 
-        # What coordinates the mouse is in
-        mouse_square = board.get_mouse_square()
+            # What coordinates the mouse is in
+            mouse_square = board.get_mouse_square()
 
-        for event in pygame.event.get():
-            # Allows the user to quit the game when they hit the exit button
-            if event.type == pygame.QUIT:
-                global run
-                run = False
-                return
 
-            # game is not over
-            if not is_game_over(engine): # will exist in ChessEngine
-                # server is waiting to receive a Move object, and it's this client's turn
-                if server_state == WAITING_FOR_TURN and is_turn(player_color, engine):
-                    # user clicks on the board
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        # second click: placing a selected piece on the board
-                        if board.piece_chosen:
-                            move = Move(board.piece_chosen, mouse_square, engine.board)
+            for event in pygame.event.get():
+                # Allows the user to quit the game when they hit the exit button
+                if event.type == pygame.QUIT:
+                    global run
+                    run = False
+                    return
 
-                            # make a move if it is a valid move and set move_made to true
-                            if move in valid_moves:
-                                engine.make_move(move)
-                                move_made = True
+                # game is not over
+                if not is_game_over(engine) and opponent_connected: # will exist in ChessEngine
+                    # server is waiting to receive a Move object, and it's this client's turn
+                    if server_state == WAITING_FOR_TURN and is_turn(player_color, engine):
+                        # user clicks on the board
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            # second click: placing a selected piece on the board
+                            if board.piece_chosen:
+                                move = Move(board.piece_chosen, mouse_square, engine.board)
 
-                                # store Move object into data buffer to send to server
-                                global make_move
-                                make_move = move
-                                print('UI/Engine: Storing move to send. END TURN.')
-                            board.piece_chosen = None
+                                # make a move if it is a valid move and set move_made to true
+                                if move in valid_moves:
+                                    engine.make_move(move)
+                                    move_made = True
 
-                        # first click: selecting a piece to move
-                        else:
-                            row, col = mouse_square
-                            # Won't allow a user to click on empty square
-                            if not engine.is_empty_square(row, col):
-                                board.piece_chosen = mouse_square
+                                    # store Move object into data buffer to send to server
+                                    global make_move
+                                    make_move = move
+                                    print('UI/Engine: Storing move to send. END TURN.')
+                                board.piece_chosen = None
 
-                # opponent's turn
+                            # first click: selecting a piece to move
+                            else:
+                                row, col = mouse_square
+                                # Won't allow a user to click on empty square
+                                if not engine.is_empty_square(row, col):
+                                    board.piece_chosen = mouse_square
+
+                    # opponent's turn
+                    else:
+                        global opponent_move
+                        # opponent's move data buffer contains data (Move object)
+                        if opponent_move is not None:
+                            print('UI/Engine: Making opponent move. START TURN.')
+                            move_made = True
+                            # make the move in the engine and clear the data buffer
+                            engine.make_move(opponent_move)
+                            opponent_move = None
+
+                    # get the next set of valid moves and reset move_made
+                    if move_made:
+                        valid_moves = engine.valid_moves()
+                        move_made = False
+
+                #
                 else:
-                    global opponent_move
-                    # opponent's move data buffer contains data (Move object)
-                    if opponent_move is not None:
-                        print('UI/Engine: Making opponent move. START TURN.')
-                        move_made = True
-                        # make the move in the engine and clear the data buffer
-                        engine.make_move(opponent_move)
-                        opponent_move = None
+                    print(opponent_connected)
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if not opponent_connected:
+                            if ok_button.collidepoint(mouse_coords):
+                                game_state = SEL_MENU
+                        # if mouse coordinates is on "go back to menu" button:
+                            # game_state = SEL_MENU
 
-                # get the next set of valid moves and reset move_made
-                if move_made:
-                    valid_moves = engine.valid_moves()
-                    move_made = False
+            # render display
+            draw_board(board, engine)
+            # if is_game_over(engine):
+                # draw game over message on UI
+                # draw a "go back to menu" button
+            if not opponent_connected:
+                ok_button = draw_popup("Opponent disconnected. Click here to return to menu")
 
-            # game is over, prompt user to return to select menu
-            # else:
-                # if event.type == pygame.MOUSEBUTTONDOWN:
-                    # if mouse coordinates is on "go back to menu" button:
-                        # game_state = SEL_MENU
+        # error occurred, return to select menu
+        except:
+            game_state = SEL_MENU
 
-        draw_board(board, engine)
-        # if is_game_over(engine):
-            # draw game over message on UI
-            # draw a "go back to menu" button
-        # elif opponent_connected is False:
-            # draw opponent disconnected message on UI
-            # draw a "go back to menu" button
+def draw_popup(message: str):
+    popup_text = font.render(message, True, (0,0,0), (255,255,255))
+    popup_rect = popup_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+    WIN.blit(popup_text, popup_rect)
 
+    return popup_rect
 
 # set window parameters and caption name
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
@@ -370,7 +415,7 @@ make_move = None        # this client has made a move to send to opponent
 opponent_move = None    # received move made by opponent
 
 run = True
-game_state = ONLINE_PLAY        # change to SEL_MENU when implemented
+game_state = SEL_MENU        # change to SEL_MENU when implemented
 ai_difficulty = None
 
 def main():
