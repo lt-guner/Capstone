@@ -1,4 +1,5 @@
 import pygame
+import traceback
 
 from .constants import *
 from .board import Board
@@ -111,20 +112,25 @@ def draw_board(board: Board, engine: ChessEngine):
     """
     Draws the current chess board state and updates the rendered image.
     """
-    # Draws the board
-    board.draw_squares(WIN)
-    board.draw_coords(WIN)
-    board.draw_selected(WIN)
-    board.draw_pieces(WIN, engine.board)
+    try:
+        # Draws the board
+        board.draw_squares(WIN)
+        board.draw_coords(WIN)
+        board.draw_selected(WIN)
+        board.draw_pieces(WIN, engine.board)
+        board.draw_sidebar(WIN, engine)
 
-    if engine.checkmate:
-        # draw checkmate text
-        pass
-    elif engine.stalemate:
-        # draw stalemate text
-        pass
+        if engine.checkmate:
+            # draw checkmate text
+            pass
+        elif engine.stalemate:
+            # draw stalemate text
+            pass
 
-    pygame.display.update()
+        pygame.display.update()
+    except:
+        print("Draw Board Error!")
+        raise
 
 def draw_sel_menu(clock):
     """
@@ -292,7 +298,6 @@ def play_multiplayer(clock):
     Executes a game of chess against another player online
     """
     global game_state
-
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
@@ -397,6 +402,7 @@ def play_multiplayer(clock):
 
         # error occurred, return to select menu
         except:
+            traceback.print_exc()
             game_state = SEL_MENU
 
 def draw_popup(message: str):
@@ -407,7 +413,7 @@ def draw_popup(message: str):
     return popup_rect
 
 # set window parameters and caption name
-WIN = pygame.display.set_mode((WIDTH,HEIGHT))
+WIN = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
 pygame.display.set_caption(WIN_NAME)
 
 # buffer to store move data
