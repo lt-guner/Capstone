@@ -164,13 +164,13 @@ def draw_sel_menu(clock):
         # draw select AI difficulty options
         if render_ai_difficulty:
             easy_diff_text = font.render(EAS_DIFF, True, DARK_BROWN)
-            easy_diff_rect = easy_diff_text.get_rect(center=(WIDTH / 2, HEIGHT / 3))
+            easy_diff_rect = easy_diff_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, HEIGHT / 3))
 
             med_diff_text = font.render(MED_DIFF, True, DARK_BROWN)
-            med_diff_rect = med_diff_text.get_rect(center=(WIDTH / 2, (1.5 * HEIGHT) / 3))
+            med_diff_rect = med_diff_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, (1.5 * HEIGHT) / 3))
 
             hard_diff_text = font.render(HAR_DIFF, True, DARK_BROWN)
-            hard_diff_rect = hard_diff_text.get_rect(center=(WIDTH / 2, (2 * HEIGHT) / 3))
+            hard_diff_rect = hard_diff_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, (2 * HEIGHT) / 3))
 
             WIN.blit(easy_diff_text, easy_diff_rect)
             WIN.blit(med_diff_text, med_diff_rect)
@@ -178,16 +178,16 @@ def draw_sel_menu(clock):
 
             # draw a back button
             back_text = font.render("Back", True, (0, 0, 0))
-            back_rect = back_text.get_rect(topright=(WIDTH, 0))
+            back_rect = back_text.get_rect(topright=((WIDTH + SIDEBAR_WIDTH), 0))
             WIN.blit(back_text, back_rect)
 
         # draw single player vs AI / online vs player options
         else:
             single_play_text = font.render(SINGLE_PLAY, True, DARK_BROWN)
-            single_play_rect = single_play_text.get_rect(center=(WIDTH / 2, HEIGHT / 3))
+            single_play_rect = single_play_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, HEIGHT / 3))
 
             multi_play_text = font.render(ONLINE_PLAY, True, DARK_BROWN)
-            multi_play_rect = multi_play_text.get_rect(center=(WIDTH / 2, (2 * HEIGHT) / 3))
+            multi_play_rect = multi_play_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, (2 * HEIGHT) / 3))
 
             WIN.blit(single_play_text, single_play_rect)
             WIN.blit(multi_play_text, multi_play_rect)
