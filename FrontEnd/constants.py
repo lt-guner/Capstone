@@ -1,6 +1,8 @@
 FPS = 60
 WIN_NAME = 'Chess'
 WIDTH, HEIGHT = 600, 600
+SIDEBAR_WIDTH = 200
+WINDOW_WIDTH, WINDOW_HEIGHT = WIDTH + SIDEBAR_WIDTH, HEIGHT
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH//COLS
 PIECE_IMG_SIZE = 60
@@ -13,14 +15,16 @@ BLUE = (0,0,255)
 DARK_BROWN = (209, 139, 71)
 LIGHT_BROWN = (255, 206, 158)
 GREEN = (0,255,0)
+BLACKISH = (30, 33, 36)
+WHITEISH = (209, 223, 237)
 
 SEL_MENU = 'select menu'
-SINGLE_PLAY = 'single play'
-ONLINE_PLAY = 'online play'
+SINGLE_PLAY = 'Single Player vs. AI'
+ONLINE_PLAY = 'Online Multiplayer'
 
-EAS_DIFF = 'easy AI'
-MED_DIFF = 'medium AI'
-HAR_DIFF = 'hard AI'
+EAS_DIFF = 'Easy AI'
+MED_DIFF = 'Medium AI'
+HAR_DIFF = 'Hard AI'
 
 # constants for chess game (add chess engine constants here)
 WHITE = 'w'

@@ -28,18 +28,13 @@ class Network:
         try:
             self.client.send(pickle.dumps(data))
         except socket.error as e:
-            self.reconnect()
+            self.client.close()
 
     def receive(self):
         try:
             return pickle.loads(self.client.recv(2048))
         except socket.error as e:
-            self.reconnect()
+            self.client.close()
 
-    def reconnect(self):
-        print(LOST_CONN_RECONN)
-        try:
-            self.client.connect(self.addr)
-            print(RECONN_SUCCESS)
-        except socket.error:
-            sleep(2)
+    def close(self):
+        self.client.close()

@@ -87,4 +87,41 @@ class Board:
             vrow, vcol = self.virt_coords(*self.piece_chosen)
             pygame.draw.rect(win, GREEN, (vcol * SQUARE_SIZE, vrow * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
+    def draw_sidebar(self, win, engine):
+        """Draws the sidebar and content"""
+        #Drawing background box
+        pygame.draw.rect(win, BLACKISH, (WIDTH, 0, SIDEBAR_WIDTH, WINDOW_HEIGHT))
+
+        #Draw turn indicator
+        if engine.white_turn:
+            text = "White's Turn"
+        else:
+            text = "Black's Turn"
+        n_text = self.font.render(text, True, WHITEISH)
+        win.blit(n_text, (WIDTH + 5, 5))
+
+        #Draw captured pieces
+        def draw_captures(piece_type, coords):
+            count = 0
+            for i in engine.pieces_captured:
+                if i == piece_type:
+                    count += 1
+            n_text = self.font.render("{}: {}".format(piece_type[1], count), True, WHITEISH)
+            win.blit(n_text, coords)
+
+        n_text = self.font.render("White's Captures", True, WHITEISH)
+        win.blit(n_text, (WIDTH+5, 40))
+        draw_captures("bP", (WIDTH + 5, 60))
+        draw_captures("bR", (WIDTH + 5, 80))
+        draw_captures("bB", (WIDTH + 5, 100))
+        draw_captures("bK", (WIDTH + 5, 120))
+        draw_captures("bQ", (WIDTH + 5, 140))
+
+        n_text = self.font.render("Blacks's Captures", True, WHITEISH)
+        win.blit(n_text, (WIDTH+5, 160))
+        draw_captures("wP", (WIDTH + 5, 180))
+        draw_captures("wR", (WIDTH + 5, 200))
+        draw_captures("wB", (WIDTH + 5, 220))
+        draw_captures("wK", (WIDTH + 5, 240))
+        draw_captures("wQ", (WIDTH + 5, 260))
 
