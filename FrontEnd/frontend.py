@@ -111,6 +111,7 @@ def is_game_over(engine: ChessEngine):
 def draw_board(board: Board, engine: ChessEngine, popup=False, popup_text=None):
     """
     Draws the current chess board state and updates the rendered image.
+    If a popup window is to be displayed, returns the rectangle object to detect click
     """
     # Draws the board
     board.draw_squares(WIN)
@@ -125,6 +126,19 @@ def draw_board(board: Board, engine: ChessEngine, popup=False, popup_text=None):
 
     if popup:
         return popup_rect
+
+def draw_popup(message: str):
+    """
+    Renders text as a popup message in the center of the screen.
+    Returns the window's rectangle object to detect click collision
+    """
+    font = pygame.font.SysFont('Arial', 24)
+    popup_text = font.render(message, True, (0,0,0), (255,255,255))
+    popup_rect = popup_text.get_rect(center=(WIDTH / 2, (0.9 * HEIGHT) / 2))
+
+    WIN.blit(popup_text, popup_rect)
+
+    return popup_rect
 
 def draw_sel_menu(clock):
     """
@@ -398,15 +412,6 @@ def play_multiplayer(clock):
         # error occurred, return to select menu
         except:
             draw_board(board, engine, display_popup, popup_text)
-
-def draw_popup(message: str):
-    font = pygame.font.SysFont('Arial', 24)
-    popup_text = font.render(message, True, (0,0,0), (255,255,255))
-    popup_rect = popup_text.get_rect(center=(WIDTH / 2, (0.9 * HEIGHT) / 2))
-
-    WIN.blit(popup_text, popup_rect)
-
-    return popup_rect
 
 # set window parameters and caption name
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
