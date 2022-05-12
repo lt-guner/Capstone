@@ -118,13 +118,6 @@ def draw_board(board: Board, engine: ChessEngine, popup=False, popup_text=None):
     board.draw_selected(WIN)
     board.draw_pieces(WIN, engine.board)
 
-    if engine.checkmate:
-        # draw checkmate text
-        pass
-    elif engine.stalemate:
-        # draw stalemate text
-        pass
-
     if popup:
         popup_rect = draw_popup(popup_text)
 
@@ -188,16 +181,13 @@ def draw_sel_menu(clock):
                 if render_ai_difficulty:
                     if easy_diff_rect.collidepoint(pygame.mouse.get_pos()):
                         ai_difficulty = EAS_DIFF
-                        print(ai_difficulty)
-                        # game_state = SINGLE_PLAY
+                        game_state = SINGLE_PLAY
                     elif med_diff_rect.collidepoint(pygame.mouse.get_pos()):
                         ai_difficulty = MED_DIFF
-                        # game_state = SINGLE_PLAY
-                        print(ai_difficulty)
+                        game_state = SINGLE_PLAY
                     elif hard_diff_rect.collidepoint(pygame.mouse.get_pos()):
                         ai_difficulty = HAR_DIFF
-                        # game_state = SINGLE_PLAY
-                        print(ai_difficulty)
+                        game_state = SINGLE_PLAY
 
                 # detect mouse click to select single vs online play
                 else:
@@ -331,9 +321,6 @@ def play_multiplayer(clock):
             elif is_game_over(engine):
                 display_popup = True
                 popup_text = "Game over. Click here to return to menu"
-
-            # elif server_state is None:
-            #
 
             # What coordinates the mouse is in
             mouse_square = board.get_mouse_square()

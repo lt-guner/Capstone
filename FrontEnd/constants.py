@@ -18,7 +18,6 @@ SEL_MENU = 'select menu'
 SINGLE_PLAY = 'Single Player vs. AI'
 ONLINE_PLAY = 'Online Multiplayer'
 
-
 EAS_DIFF = 'Easy AI'
 MED_DIFF = 'Medium AI'
 HAR_DIFF = 'Hard AI'
