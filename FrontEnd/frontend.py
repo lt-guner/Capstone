@@ -1,4 +1,5 @@
 import pygame
+import traceback
 
 from .constants import *
 from .board import Board
@@ -114,19 +115,24 @@ def draw_board(board: Board, engine: ChessEngine, popup=False, popup_text=None):
     Draws the current chess board state and updates the rendered image.
     If a popup window is to be displayed, returns the rectangle object to detect click
     """
-    # Draws the board
-    board.draw_squares(WIN)
-    board.draw_coords(WIN)
-    board.draw_selected(WIN)
-    board.draw_pieces(WIN, engine.board)
+    try:
+        # Draws the board
+        board.draw_squares(WIN)
+        board.draw_coords(WIN)
+        board.draw_selected(WIN)
+        board.draw_pieces(WIN, engine.board)
+        board.draw_sidebar(WIN, engine)
 
-    if popup:
-        popup_rect = draw_popup(popup_text)
+        if popup:
+          popup_rect = draw_popup(popup_text)
 
-    pygame.display.update()
-
-    if popup:
-        return popup_rect
+        pygame.display.update()
+        
+        if popup:
+          return popup_rect
+    except:
+        print("Draw Board Error!")
+        raise
 
 def draw_popup(message: str):
     """
@@ -306,7 +312,6 @@ def play_multiplayer(clock):
     Executes a game of chess against another player online
     """
     global game_state
-
     # connect to server and get player color
     n = Network()
     player_color = init_connect(n)
@@ -419,10 +424,18 @@ def play_multiplayer(clock):
 
         # error occurred, return to select menu
         except:
-            draw_board(board, engine, display_popup, popup_text)
+            traceback.print_exc()
+            game_state = SEL_MENU
+
+def draw_popup(message: str):
+    popup_text = font.render(message, True, (0,0,0), (255,255,255))
+    popup_rect = popup_text.get_rect(center=(WIDTH / 2, HEIGHT / 2))
+    WIN.blit(popup_text, popup_rect)
+
+    return popup_rect
 
 # set window parameters and caption name
-WIN = pygame.display.set_mode((WIDTH,HEIGHT))
+WIN = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
 pygame.display.set_caption(WIN_NAME)
 
 # buffer to store move data
