@@ -45,9 +45,13 @@ def threaded_client(conn, playerNum):
                 break
 
             # check if opponent has disconnected
-            elif is_opponent_disconnected(playerNum):
+            elif game_start and (not player_connected[0] or not player_connected[1]):
                 reply = OPPONENT_DISCONNECTED
                 print("Player " + str(playerNum) + "'s opponent has disconnected")
+
+            # elif is_opponent_disconnected(playerNum):
+            #     reply = OPPONENT_DISCONNECTED
+            #     print("Player " + str(playerNum) + "'s opponent has disconnected")
 
             else:
                 # client is waiting for confirmation that the game has begun
@@ -119,12 +123,15 @@ while True:
         player_connected = [False, False]
         player_ip[playerCount] = [None, None]
 
-    if playerCount <= 1:
+    if playerCount <= 1 and player_ip[1] is None:
             print("Connected to:", addr, "as player", playerCount)
             player_connected[playerCount] = True
             player_ip[playerCount] = addr
             start_new_thread(threaded_client, (conn, playerCount))
             playerCount += 1
+
+            if playerCount == 1:
+                game_start = True
 
     # more than 2 players, disconnect new connections immediately
     else:
