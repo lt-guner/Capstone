@@ -100,6 +100,7 @@ def threaded_client(conn, playerNum):
 
     # no connected players, end game
     if playerCount == 0:
+        print("---Ending game---")
         game_start = False
 
 
@@ -119,6 +120,7 @@ while True:
 
         # second player connected, start the game
         if playerCount == 1:
+            print("---Starting new game---")
             game_start = True
 
         playerCount += 1
