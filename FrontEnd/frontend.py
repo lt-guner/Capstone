@@ -413,13 +413,10 @@ def play_multiplayer(clock):
             else:
                 draw_board(board, engine)
 
-            # if is_game_over(engine):
-                # draw game over message on UI
-                # draw a "go back to menu" button
-
         # error occurred, return to select menu
         except:
-            draw_board(board, engine, display_popup, popup_text)
+            traceback.print_exc()
+            game_state = SEL_MENU
 
 # set window parameters and caption name
 WIN = pygame.display.set_mode((WIDTH,HEIGHT))
