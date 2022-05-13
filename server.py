@@ -15,6 +15,7 @@ except socket.error as e:
 s.listen(2)
 print(SERVER_START)
 
+
 def threaded_client(conn, playerNum):
     """
     Creates a thread to send/receive data to each player.
@@ -129,4 +130,3 @@ while True:
     else:
         conn.send(pickle.dumps(ERROR))
         conn.close()
-
