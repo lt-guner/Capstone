@@ -289,7 +289,6 @@ def play_singleplayer(clock, difficulty):
                                 # store Move object into data buffer to send to server
                                 global make_move
                                 make_move = move
-                                print('UI/Engine: Storing move to send. END TURN.')
                             board.piece_chosen = None
 
                         # first click: selecting a piece to move
@@ -301,15 +300,15 @@ def play_singleplayer(clock, difficulty):
                 # AI executes turn
                 else:
                     # AI makes a move
-                    # if difficulty == EAS_DIFF:
-                    # AI makes easy move
-                    # elif difficulty == MED_DIFF:
-                    # AI makes med move
-                    # else:
-                    # AI makes hard move
+                    if difficulty == EAS_DIFF:
+                        ai_move = ai.random_ai(valid_moves)
+                    elif difficulty == MED_DIFF:
+                        ai_move = ai.greedy_ai(valid_moves, engine)
+                    else:
+                        ai_move = ai.negamax_alphabeta_ai(valid_moves, engine)
+                    engine.make_move(ai_move)
                     move_made = True
-                    pass
-
+                    
                 # get the next set of valid moves and reset move_made
                 if move_made:
                     valid_moves = engine.valid_moves()

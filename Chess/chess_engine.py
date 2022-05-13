@@ -491,7 +491,7 @@ class ChessEngine:
         """
         return (self.white_king_loc, self.black_king_loc)
 
-    def get_material_score(self):
+    def get_material_score(self, hard_mode=False):
         """
         Gets a material score of the board. The piece scoring is on the constants file.
         # https://www.freecodecamp.org/news/simple-chess-ai-step-by-step-1d55a9266977/
@@ -519,7 +519,7 @@ class ChessEngine:
                 piece = self.get_square(row, column)
                 if piece is not None:
                     piece_position_score = 0
-                    if piece[1] != KING:
+                    if piece[1] != KING and hard_mode:
                         piece_position_score = PIECE_POSITIONAL_SCORE[piece][row][column]
                     if piece[0] == WHITE:
                         score += PIECE_STRENGTH[piece[1]] + piece_position_score

@@ -40,13 +40,8 @@ class ChessAI:
             engine.make_move(move)
             score = engine.get_material_score()
 
-            # if a checkmate occurs then win, if stalemate occurs then tie, if check occurs then -100
-            if engine.get_status()[0] is True:
-                score = -CHECKMATE
-            elif engine.get_status()[1] is True:
-                score = STALEMATE
-            elif engine.is_in_check("WHITE", castling_row=engine.get_king_location()[0][0],
-                                    castling_col=engine.get_king_location()[0][1], castling=True):
+            if engine.is_in_check("WHITE", castling_row=engine.get_king_location()[0][0], 
+                                  castling_col=engine.get_king_location()[0][1], castling=True):
                 score = -CHECK
 
             # if neither checkmate, stalemate, check then make if score will get better for black
@@ -56,6 +51,10 @@ class ChessAI:
 
             # undo the move
             engine.undo_move()
+            
+        # choose random if move is none
+        if best_move is None:
+            best_move = self.random_ai(moves)
 
         return best_move
 
@@ -78,6 +77,7 @@ class ChessAI:
         # call negamax
         self.negamax_alphabeta_helper(moves, engine, DEPTH, -CHECKMATE, CHECKMATE, -1)
 
+        # if move is still none call random
         if next_move is None:
             next_move = self.random_ai(moves)
 
@@ -90,7 +90,7 @@ class ChessAI:
 
         # base case which is to return the piece values by the turn_base multiplier
         if depth == 0:
-            return turn_base * engine.get_material_score()
+            return turn_base * engine.get_material_score(hard_mode=True)
 
         # set max_score to -CHECKMATE, since using this we will be using a multiplier that will change the score to
         # all positives regardless of black or white turn
@@ -114,3 +114,4 @@ class ChessAI:
             if alpha >= beta:
                 break
         return max_score
+    
