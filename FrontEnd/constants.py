@@ -4,17 +4,17 @@ WIDTH, HEIGHT = 600, 600
 SIDEBAR_WIDTH = 200
 WINDOW_WIDTH, WINDOW_HEIGHT = WIDTH + SIDEBAR_WIDTH, HEIGHT
 ROWS, COLS = 8, 8
-SQUARE_SIZE = WIDTH//COLS
+SQUARE_SIZE = WIDTH // COLS
 PIECE_IMG_SIZE = 60
 COORD_FONT_SIZE = 20
 
-RED = (255,0,0)
-#WHITE = (255,255,255)
-#BLACK = (0,0,0)
-BLUE = (0,0,255)
+RED = (255, 0, 0)
+# WHITE = (255,255,255)
+# BLACK = (0,0,0)
+BLUE = (0, 0, 255)
 DARK_BROWN = (209, 139, 71)
 LIGHT_BROWN = (255, 206, 158)
-GREEN = (0,255,0)
+GREEN = (0, 255, 0)
 BLACKISH = (30, 33, 36)
 WHITEISH = (209, 223, 237)
 
@@ -32,7 +32,7 @@ BLACK = 'b'
 
 # constants for sockets
 # socket connection parameters
-SERVER = 'localhost'     # change to ip address of where server is run
+SERVER = 'localhost'  # change to ip address of where server is run
 PORT = 5555
 
 # server-to-client messages

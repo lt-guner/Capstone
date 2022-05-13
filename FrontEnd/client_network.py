@@ -8,6 +8,7 @@ class Payload:
     def __init__(self, data):
         self.data = data
 
+
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

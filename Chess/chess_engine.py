@@ -1,5 +1,5 @@
-from .move import Move
-from .constants import *
+from Chess.move import Move
+from Chess.constants import *
 
 
 class ChessEngine:
@@ -33,7 +33,9 @@ class ChessEngine:
         self.white_king_loc = (7, 4)
         self.black_king_loc = (0, 4)
 
-        self.enpassant_coords = ()  # used to save the enpassant
+        # used to save the enpassant coords and logs
+        self.enpassant_coords = ()
+        self.enpassant_log = [self.enpassant_coords]
 
         # keep track of check mate and stalemate
         self.checkmate = False
@@ -87,6 +89,9 @@ class ChessEngine:
         else:
             self.enpassant_coords = ()
 
+        # append the current enpassant coords to the log
+        self.enpassant_log.append(self.enpassant_coords)
+
     def undo_move(self):
         """
         Undoes the last move
@@ -118,12 +123,10 @@ class ChessEngine:
             if undone_move.enpassant_move:
                 self.board[undone_move.end_row][undone_move.end_col] = None
                 self.board[undone_move.start_row][undone_move.end_col] = undone_move.piece_captured
-                self.enpassant_coords = (undone_move.end_row, undone_move.end_col)
 
-            # undo a two pawn on advance
-            if (undone_move.piece_moved == 'wP' or undone_move.piece_moved == 'bP') and \
-                    (abs(undone_move.start_row - undone_move.end_row) == 2):
-                self.enpassant_coords = ()
+            # pop the moves of enpassant and set the current coords to the last element in the list
+            self.enpassant_log.pop()
+            self.enpassant_coords = self.enpassant_log[-1]
 
             # if castle move undo the move
             if undone_move.castling_move:
@@ -135,6 +138,10 @@ class ChessEngine:
                     self.board[undone_move.end_row][undone_move.end_col - 2] = self.board[undone_move.end_row][
                         undone_move.end_col + 1]
                     self.board[undone_move.end_row][undone_move.end_col + 1] = None
+
+            # undo the states when using undo
+            self.checkmate = False
+            self.stalemate = False
 
     def valid_moves(self):
         """
@@ -299,15 +306,8 @@ class ChessEngine:
         This function handles all the Queen, Bishop, and Rook moves
         """
 
-        # bishops can move diagonally all directions and as many spaces as possible
-        # rook can move cross directions and as many spaces as possible
-        # queen can move as a bishop and rook
-        move_directions = {'Q': [[0, 1], [0, -1], [-1, 0], [1, 0], [1, 1], [1, -1], [-1, -1], [-1, 1]],
-                           'B': [[1, 1], [1, -1], [-1, -1], [-1, 1]],
-                           'R': [[0, 1], [0, -1], [-1, 0], [1, 0]]}
-
         # for direction of movement for the piece
-        for mov_dir in move_directions[piece]:
+        for mov_dir in MOVE_DIRECTIONS[piece]:
             # location of potential move in the direction of mov_dir
             cur_row = row + mov_dir[0]
             cur_col = col + mov_dir[1]
@@ -326,11 +326,8 @@ class ChessEngine:
         """
         this function handles king and knight moves
         """
-        # both knight and king can move 8 possible directions one time
-        move_directions = {"N": [[-2, 1], [-2, -1], [-1, -2], [-1, 2], [1, 2], [1, -2], [2, 1], [2, -1]],
-                           "K": [[0, 1], [0, -1], [-1, 0], [1, 0], [1, 1], [1, -1], [-1, -1], [-1, 1]]}
 
-        for mov_dir in move_directions[piece]:
+        for mov_dir in MOVE_DIRECTIONS[piece]:
             # location of potential move in the direction of mov_dir
             cur_row = row + mov_dir[0]
             cur_col = col + mov_dir[1]
@@ -364,17 +361,18 @@ class ChessEngine:
         returns the moves for castling of king side
         """
         if self.is_empty_square(row, col + 1) and self.is_empty_square(row, col + 2):
-            if not self.is_in_check(color, castling_row=row, castling_col=col+1, castling=True) \
-                    and not self.is_in_check(color, castling_row=row, castling_col=col+2, castling=True):
+            if not self.is_in_check(color, castling_row=row, castling_col=col + 1, castling=True) \
+                    and not self.is_in_check(color, castling_row=row, castling_col=col + 2, castling=True):
                 moves_list.append(Move((row, col), (row, col + 2), self.board, castle=True))
 
     def queen_side_castle(self, row, col, color, moves_list):
         """
         returns the moves for castling of queen side
         """
-        if self.is_empty_square(row, col-1) and self.is_empty_square(row, col-2) and self.is_empty_square(row, col-3):
-            if not self.is_in_check(color, castling_row=row, castling_col=col-1, castling=True) \
-                    and not self.is_in_check(color, castling_row=row, castling_col=col-2, castling=True):
+        if self.is_empty_square(row, col - 1) and self.is_empty_square(row, col - 2) and self.is_empty_square(row,
+                                                                                                              col - 3):
+            if not self.is_in_check(color, castling_row=row, castling_col=col - 1, castling=True) \
+                    and not self.is_in_check(color, castling_row=row, castling_col=col - 2, castling=True):
                 moves_list.append(Move((row, col), (row, col - 2), self.board, castle=True))
 
     def get_castling_rights(self):
@@ -385,6 +383,7 @@ class ChessEngine:
 
         # set all castling rights to True
         wks, bks, wqs, bqs = True, True, True, True
+
         for i in range(len(self.move_log)):
 
             # if king moved, then both white king side and black side are False
@@ -405,11 +404,24 @@ class ChessEngine:
             # check if either black rook moved and set the rights accordingly
             if self.move_log[i].piece_moved == 'bR':
                 if self.move_log[i].start_row == 0 and self.move_log[i].start_col == 0:
-                    wqs = False
+                    bqs = False
                 elif self.move_log[i].start_row == 0 and self.move_log[i].start_col == 7:
+                    bks = False
+
+            # if white rook was captured at its starting position, then update castling rights accordingly
+            if self.move_log[i].piece_captured == 'wR':
+                if self.move_log[i].end_row == 7 and self.move_log[i] == 0:
+                    wqs = False
+                elif self.move_log[i].end_row == 7 and self.move_log[i] == 7:
                     wks = False
 
-        # help
+            # same thing for black
+            if self.move_log[i].piece_captured == 'bR':
+                if self.move_log[i].end_row == 0 and self.move_log[i] == 0:
+                    bqs = False
+                elif self.move_log[i].end_row == 0 and self.move_log[i] == 7:
+                    bks = False
+
         return [wks, bks, wqs, bqs]
 
     def get_board(self):
@@ -448,3 +460,70 @@ class ChessEngine:
         Returns the piece located at the square. Return None is no piece is there
         """
         return self.board[row][column]
+
+    def get_player_turn(self):
+        """
+        returns the turn
+        """
+        return "White" if self.white_turn else "Black"
+
+    def get_move_log(self):
+        """
+        returns the move log for human format
+        """
+        return self.legible_move_list
+
+    def get_captured_pieces(self):
+        """
+        returns the pieces that were captured
+        """
+        return self.pieces_captured
+
+    def get_status(self):
+        """
+        returns the state of checkmate or stalemate
+        """
+        return (self.checkmate, self.stalemate)
+
+    def get_king_location(self):
+        """
+        returns the location of both kings 
+        """
+        return (self.white_king_loc, self.black_king_loc)
+
+    def get_material_score(self, hard_mode=False):
+        """
+        Gets a material score of the board. The piece scoring is on the constants file.
+        # https://www.freecodecamp.org/news/simple-chess-ai-step-by-step-1d55a9266977/
+        # https://www.chessprogramming.org/Simplified_Evaluation_Function
+        """
+
+        # if its checkmate no need to scoreboard
+        if self.get_status()[0]:
+            if self.white_turn:
+                return -CHECKMATE
+            else:
+                return CHECKMATE
+
+        # same with stalemate
+        elif self.get_status()[1]:
+            return STALEMATE
+
+        # start with a score of 0 and get the board
+        score = 0
+        board = self.get_board()
+
+        # loops through entire board to get a score based on the piece strengths and positional strength of the board
+        for row in range(len(board)):
+            for column in range(len(board[row])):
+                piece = self.get_square(row, column)
+                if piece is not None:
+                    piece_position_score = 0
+                    if piece[1] != KING and hard_mode:
+                        piece_position_score = PIECE_POSITIONAL_SCORE[piece][row][column]
+                    if piece[0] == WHITE:
+                        score += PIECE_STRENGTH[piece[1]] + piece_position_score
+                    else:
+                        score -= PIECE_STRENGTH[piece[1]] + piece_position_score
+
+        return score
