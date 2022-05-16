@@ -8,7 +8,7 @@ from Chess.move import Move
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    s.bind((SERVER, PORT))
+    s.bind(('', PORT))
 except socket.error as e:
     str(e)
 
