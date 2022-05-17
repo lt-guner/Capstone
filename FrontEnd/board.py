@@ -83,12 +83,22 @@ class Board:
         vrow, vcol = self.virt_coords(mouse_coords[1] // SQUARE_SIZE, mouse_coords[0] // SQUARE_SIZE)
         return (vrow, vcol)
 
-    def draw_selected(self, win):
-        """Draws a green box on the selected square tile on the board."""
-        if self.piece_chosen:
+    def draw_selected(self, win, moves, engine):
+        """Draws highlighted green box for the selected piece and highlighted yellow boxes for valid moves of the
+        piece"""
+        if self.piece_chosen is not None:
             # Transforming the coordinates for player view
             vrow, vcol = self.virt_coords(*self.piece_chosen)
-            pygame.draw.rect(win, GREEN, (vcol * SQUARE_SIZE, vrow * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+            if (engine.get_board()[vrow][vcol][0] == 'w' and engine.get_player_turn() == 'White') or \
+                    (engine.get_board()[vrow][vcol][0] == 'b' and engine.get_player_turn() == 'Black'):
+                highlight = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
+                highlight.set_alpha(150)
+                highlight.fill(pygame.Color('green'))
+                win.blit(highlight, (vcol*SQUARE_SIZE, vrow*SQUARE_SIZE))
+                highlight.fill(pygame.Color('yellow'))
+                for move in moves:
+                    if move.start_row == vrow and move.start_col == vcol:
+                        win.blit(highlight, (move.end_col * SQUARE_SIZE, move.end_row * SQUARE_SIZE))
 
     def draw_sidebar(self, win, engine):
         """Draws the sidebar and content"""

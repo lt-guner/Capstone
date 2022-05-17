@@ -125,8 +125,8 @@ def draw_board(board: Board, engine: ChessEngine, popup=False, popup_text=None):
         # Draws the board
         board.draw_squares(WIN)
         board.draw_coords(WIN)
-        board.draw_selected(WIN)
-        board.draw_pieces(WIN, engine.board)
+        board.draw_selected(WIN, engine.valid_moves(), engine)
+        board.draw_pieces(WIN, engine.get_board())
         board.draw_sidebar(WIN, engine)
 
         if popup:
