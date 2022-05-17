@@ -125,8 +125,8 @@ def draw_board(board: Board, engine: ChessEngine, popup=False, popup_text=None):
         # Draws the board
         board.draw_squares(WIN)
         board.draw_coords(WIN)
-        board.draw_selected(WIN)
-        board.draw_pieces(WIN, engine.board)
+        board.draw_selected(WIN, engine.valid_moves(), engine)
+        board.draw_pieces(WIN, engine.get_board())
         board.draw_sidebar(WIN, engine)
 
         if popup:
@@ -165,20 +165,35 @@ def draw_sel_menu(clock):
     while game_state == SEL_MENU:
         clock.tick(FPS)
 
-        font = pygame.font.SysFont('Arial', 30)
+        font = pygame.font.SysFont('Arial', 30, bold=True)
 
         WIN.fill(LIGHT_BROWN)  # blanks out the screen. can replace with a background image
+
+        # load the background
+        background_chess = pygame.image.load('./FrontEnd/Assets/chessbackground.jpg')
+        WIN.blit(background_chess, (0, 0))
+
+        welcome_font = pygame.font.SysFont('Arial', 50, bold=True)
+        welcome_text = welcome_font.render('Welcome', True, DARK_BROWN)
+        welcome_rect = welcome_text.get_rect(center=(290, 175))
+        WIN.blit(welcome_text, welcome_rect)
+        chess_text = welcome_font.render('Chess', True, DARK_BROWN)
+        chess_rect = chess_text.get_rect(center=(290, 275))
+        WIN.blit(chess_text, chess_rect)
+        player_text = welcome_font.render('Player', True, DARK_BROWN)
+        player_rect = player_text.get_rect(center=(290, 375))
+        WIN.blit(player_text, player_rect)
 
         # draw select AI difficulty options
         if render_ai_difficulty:
             easy_diff_text = font.render(EAS_DIFF, True, DARK_BROWN)
-            easy_diff_rect = easy_diff_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, HEIGHT / 3))
+            easy_diff_rect = easy_diff_text.get_rect(center=((WINDOW_WIDTH - 150), HEIGHT / 3))
 
             med_diff_text = font.render(MED_DIFF, True, DARK_BROWN)
-            med_diff_rect = med_diff_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, (1.5 * HEIGHT) / 3))
+            med_diff_rect = med_diff_text.get_rect(center=((WINDOW_WIDTH - 150), (1.5 * HEIGHT) / 3))
 
             hard_diff_text = font.render(HAR_DIFF, True, DARK_BROWN)
-            hard_diff_rect = hard_diff_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, (2 * HEIGHT) / 3))
+            hard_diff_rect = hard_diff_text.get_rect(center=((WINDOW_WIDTH - 150), (2 * HEIGHT) / 3))
 
             WIN.blit(easy_diff_text, easy_diff_rect)
             WIN.blit(med_diff_text, med_diff_rect)
@@ -192,10 +207,10 @@ def draw_sel_menu(clock):
         # draw single player vs AI / online vs player options
         else:
             single_play_text = font.render(SINGLE_PLAY, True, DARK_BROWN)
-            single_play_rect = single_play_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, HEIGHT / 3))
+            single_play_rect = single_play_text.get_rect(center=((WINDOW_WIDTH - 150), HEIGHT / 3))
 
             multi_play_text = font.render(ONLINE_PLAY, True, DARK_BROWN)
-            multi_play_rect = multi_play_text.get_rect(center=((WIDTH + SIDEBAR_WIDTH) / 2, (2 * HEIGHT) / 3))
+            multi_play_rect = multi_play_text.get_rect(center=((WINDOW_WIDTH - 150), (2 * HEIGHT) / 3))
 
             WIN.blit(single_play_text, single_play_rect)
             WIN.blit(multi_play_text, multi_play_rect)

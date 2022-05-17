@@ -83,12 +83,22 @@ class Board:
         vrow, vcol = self.virt_coords(mouse_coords[1] // SQUARE_SIZE, mouse_coords[0] // SQUARE_SIZE)
         return (vrow, vcol)
 
-    def draw_selected(self, win):
-        """Draws a green box on the selected square tile on the board."""
-        if self.piece_chosen:
+    def draw_selected(self, win, moves, engine):
+        """Draws highlighted green box for the selected piece and highlighted yellow boxes for valid moves of the
+        piece"""
+        if self.piece_chosen is not None:
             # Transforming the coordinates for player view
             vrow, vcol = self.virt_coords(*self.piece_chosen)
-            pygame.draw.rect(win, GREEN, (vcol * SQUARE_SIZE, vrow * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+            if (engine.get_board()[vrow][vcol][0] == 'w' and engine.get_player_turn() == 'White') or \
+                    (engine.get_board()[vrow][vcol][0] == 'b' and engine.get_player_turn() == 'Black'):
+                highlight = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
+                highlight.set_alpha(150)
+                highlight.fill(pygame.Color('green'))
+                win.blit(highlight, (vcol*SQUARE_SIZE, vrow*SQUARE_SIZE))
+                highlight.fill(pygame.Color('yellow'))
+                for move in moves:
+                    if move.start_row == vrow and move.start_col == vcol:
+                        win.blit(highlight, (move.end_col * SQUARE_SIZE, move.end_row * SQUARE_SIZE))
 
     def draw_sidebar(self, win, engine):
         """Draws the sidebar and content"""
@@ -96,7 +106,7 @@ class Board:
         pygame.draw.rect(win, BLACKISH, (WIDTH, 0, SIDEBAR_WIDTH, WINDOW_HEIGHT))
 
         # Draw turn indicator
-        if engine.white_turn:
+        if engine.get_player_turn() == 'White':
             text = "White's Turn"
         else:
             text = "Black's Turn"
@@ -109,7 +119,7 @@ class Board:
             for i in engine.pieces_captured:
                 if i == piece_type:
                     count += 1
-            n_text = self.font.render("{}: {}".format(piece_type[1], count), True, WHITEISH)
+            n_text = self.font.render("{}: {}".format(PIECES[piece_type[1]], count), True, WHITEISH)
             win.blit(n_text, coords)
 
         n_text = self.font.render("White's Captures", True, WHITEISH)
@@ -117,13 +127,16 @@ class Board:
         draw_captures("bP", (WIDTH + 5, 60))
         draw_captures("bR", (WIDTH + 5, 80))
         draw_captures("bB", (WIDTH + 5, 100))
-        draw_captures("bK", (WIDTH + 5, 120))
+        draw_captures("bN", (WIDTH + 5, 120))
         draw_captures("bQ", (WIDTH + 5, 140))
 
-        n_text = self.font.render("Blacks's Captures", True, WHITEISH)
-        win.blit(n_text, (WIDTH + 5, 160))
-        draw_captures("wP", (WIDTH + 5, 180))
-        draw_captures("wR", (WIDTH + 5, 200))
-        draw_captures("wB", (WIDTH + 5, 220))
-        draw_captures("wK", (WIDTH + 5, 240))
-        draw_captures("wQ", (WIDTH + 5, 260))
+        n_text = self.font.render("Black's Captures", True, WHITEISH)
+        win.blit(n_text, (WIDTH + 5, 175))
+        draw_captures("wP", (WIDTH + 5, 195))
+        draw_captures("wR", (WIDTH + 5, 215))
+        draw_captures("wB", (WIDTH + 5, 235))
+        draw_captures("wN", (WIDTH + 5, 255))
+        draw_captures("wQ", (WIDTH + 5, 275))
+
+        n_text = self.font.render("Number of Turns: {turns}".format(turns=len(engine.get_move_log())), True, WHITEISH)
+        win.blit(n_text, (WIDTH + 5, 310))
