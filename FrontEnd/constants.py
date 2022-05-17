@@ -10,7 +10,7 @@ COORD_FONT_SIZE = 20
 
 RED = (255, 0, 0)
 # WHITE = (255,255,255)
-# BLACK = (0,0,0)
+# BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 DARK_BROWN = (209, 139, 71)
 LIGHT_BROWN = (255, 206, 158)
@@ -53,3 +53,5 @@ GAME_FULL = 'Connection Terminated. Game is already full.'
 CONN_SUCCESS = 'Connected to server'
 LOST_CONN_RECONN = 'Connection lost... reconnecting'
 RECONN_SUCCESS = 'Reconnection successful'
+
+PIECES = {'P': 'Pawn', 'R': 'Rook', 'N': 'Knight', 'B': 'Bishop', 'Q': 'Queen'}
