@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="This includes highlighting of valid moves.">
+    <list default="true" id="84971ec4-f333-4651-99e5-ec40027c586e" name="Changes" comment="A new update based on josh's recommendations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/board.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/board.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FrontEnd/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/frontend.py" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/frontend.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -232,11 +230,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.run_frontend" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.test_game (1)" />
         <item itemvalue="Python.server" />
         <item itemvalue="Python.server (1)" />
-        <item itemvalue="Python.run_frontend" />
       </list>
     </recent_temporary>
   </component>
@@ -270,7 +268,7 @@
       <workItem from="1652242436334" duration="25974000" />
       <workItem from="1652397684735" duration="459000" />
       <workItem from="1652703149246" duration="1038000" />
-      <workItem from="1652787968452" duration="2911000" />
+      <workItem from="1652787968452" duration="3567000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -298,17 +296,10 @@
     <SUITE FILE_PATH="coverage/CapstoneCS467$server__1_.coverage" NAME="server (1) Coverage Results" MODIFIED="1652788324534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/FrontEnd" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$test_game__1_.coverage" NAME="test_game (1) Coverage Results" MODIFIED="1650561600655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server_files" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$test_game.coverage" NAME="test_game Coverage Results" MODIFIED="1649900955285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$run_frontend.coverage" NAME="run_frontend Coverage Results" MODIFIED="1652846089555" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CapstoneCS467$run_frontend.coverage" NAME="run_frontend Coverage Results" MODIFIED="1652846805926" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CapstoneCS467$test.coverage" NAME="test Coverage Results" MODIFIED="1652409395093" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$chess_engine.coverage" NAME="chess_engine Coverage Results" MODIFIED="1649815351556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/luo_chess_engine_test" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$server.coverage" NAME="server Coverage Results" MODIFIED="1652398043445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CapstoneCS467$frontend.coverage" NAME="frontend Coverage Results" MODIFIED="1651167966645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/FrontEnd" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$test_game.coverage" NAME="test_game Coverage Results" MODIFIED="1649900955285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$run_frontend.coverage" NAME="run_frontend Coverage Results" MODIFIED="1652384866225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$frontend.coverage" NAME="frontend Coverage Results" MODIFIED="1651167966645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/FrontEnd" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$chess_engine.coverage" NAME="chess_engine Coverage Results" MODIFIED="1649815351556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/luo_chess_engine_test" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$server.coverage" NAME="server Coverage Results" MODIFIED="1652384138428" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$test.coverage" NAME="test Coverage Results" MODIFIED="1652409395093" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$server__1_.coverage" NAME="server (1) Coverage Results" MODIFIED="1651116295732" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server_files" />
-    <SUITE FILE_PATH="coverage/CapstoneCS467$test_game__1_.coverage" NAME="test_game (1) Coverage Results" MODIFIED="1650561600655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server_files" />
   </component>
 </project>
