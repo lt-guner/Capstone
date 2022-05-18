@@ -89,18 +89,27 @@ class Board:
         if self.piece_chosen is not None:
             # Transforming the coordinates for player view
             vrow, vcol = self.virt_coords(*self.piece_chosen)
-            print(vrow, vcol)
-            if engine.get_board()[vrow][vcol] is not None:
-                if (engine.get_board()[vrow][vcol][0] == 'w' and engine.white_turn) or \
-                        (engine.get_board()[vrow][vcol][0] == 'b' and not engine.white_turn):
+            if engine.get_board()[vrow][vcol] is not None and engine.white_turn:
+                if engine.get_board()[vrow][vcol][0] == 'w':
                     highlight = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
                     highlight.set_alpha(150)
                     highlight.fill(pygame.Color('green'))
-                    win.blit(highlight, (vcol*SQUARE_SIZE, vrow*SQUARE_SIZE))
+                    win.blit(highlight, (vcol * SQUARE_SIZE, vrow * SQUARE_SIZE))
                     highlight.fill(pygame.Color('yellow'))
                     for move in moves:
                         if move.start_row == vrow and move.start_col == vcol:
                             win.blit(highlight, (move.end_col * SQUARE_SIZE, move.end_row * SQUARE_SIZE))
+            elif engine.get_board()[ROWS - vrow - 1][COLS - vcol - 1] is not None and not engine.white_turn:
+                if engine.get_board()[ROWS - vrow - 1][COLS - vcol - 1][0] == 'b':
+                    highlight = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
+                    highlight.set_alpha(150)
+                    highlight.fill(pygame.Color('green'))
+                    win.blit(highlight, (vcol * SQUARE_SIZE, vrow * SQUARE_SIZE))
+                    highlight.fill(pygame.Color('yellow'))
+                    for move in moves:
+                        if move.start_row == ROWS - vrow - 1 and move.start_col == COLS - vcol - 1:
+                            win.blit(highlight, ((COLS - move.end_col - 1) * SQUARE_SIZE, (ROWS - move.end_row - 1)
+                                                 * SQUARE_SIZE))
 
     def draw_sidebar(self, win, engine):
         """Draws the sidebar and content"""
