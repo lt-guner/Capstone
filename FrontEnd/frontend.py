@@ -129,13 +129,20 @@ def draw_board(board: Board, engine: ChessEngine, popup=False, popup_text=None):
         board.draw_pieces(WIN, engine.get_board())
         board.draw_sidebar(WIN, engine)
 
+        # draw a back button
+        font = pygame.font.SysFont('Arial', 20)
+        back_text = font.render("Back", True, WHITEISH)
+        back_rect = back_text.get_rect(topright=((WIDTH + SIDEBAR_WIDTH), 0))
+        WIN.blit(back_text, back_rect)
+
         if popup:
             popup_rect = draw_popup(popup_text)
 
         pygame.display.update()
 
         if popup:
-            return popup_rect
+            return popup_rect, back_rect
+        return back_rect
     except:
         print("Draw Board Error!")
         raise
@@ -200,7 +207,7 @@ def draw_sel_menu(clock):
             WIN.blit(hard_diff_text, hard_diff_rect)
 
             # draw a back button
-            back_text = font.render("Back", True, (0, 0, 0))
+            back_text = font.render("Back", True, BLACKISH)
             back_rect = back_text.get_rect(topright=((WIDTH + SIDEBAR_WIDTH), 0))
             WIN.blit(back_text, back_rect)
 
@@ -258,6 +265,10 @@ def play_singleplayer(clock, difficulty):
     board = Board(player_color)
     ai = ChessAI()
 
+    display_popup = False
+    popup_text = None
+    popup_win = None
+
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
     move_made = False
@@ -266,8 +277,22 @@ def play_singleplayer(clock, difficulty):
     while game_state == SINGLE_PLAY:
         clock.tick(FPS)
 
+        # render display
+        if display_popup:
+            popup_win, back_rect = draw_board(board, engine, display_popup, popup_text)
+        else:
+            back_rect = draw_board(board, engine)
+
         # What coordinates the mouse is in
         mouse_square = board.get_mouse_square()
+
+        # game is over, return to select menu
+        if is_game_over(engine):
+            display_popup = True
+            if engine.checkmate:
+                popup_text = "Checkmate. Click here to return to menu"
+            else:
+                popup_text = "Stalemate. Click here to return to menu"
 
         for event in pygame.event.get():
             # Allows the user to quit the game when they hit the exit button
@@ -275,6 +300,10 @@ def play_singleplayer(clock, difficulty):
                 global run
                 run = False
                 return
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_rect.collidepoint(pygame.mouse.get_pos()):
+                    game_state = SEL_MENU
 
             # game is not over
             if not is_game_over(engine):
@@ -329,17 +358,11 @@ def play_singleplayer(clock, difficulty):
                     valid_moves = engine.valid_moves()
                     move_made = False
 
-            # game is over, prompt user to return to select menu
-            # else:
-            # if event.type == pygame.MOUSEBUTTONDOWN:
-            # if mouse coordinates is on "go back to menu" button:
-            # game_state = SEL_MENU
-
-        draw_board(board, engine)
-        # if is_game_over(engine):
-        # draw game over message on UI
-        # draw a "go back to menu" button
-
+            # look for click on popup window to return to select menu
+            else:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if popup_win.collidepoint(pygame.mouse.get_pos()):
+                        game_state = SEL_MENU
 
 def play_multiplayer(clock):
     """
@@ -369,6 +392,12 @@ def play_multiplayer(clock):
     while game_state == ONLINE_PLAY:
         clock.tick(FPS)
 
+        # render display
+        if display_popup:
+            popup_win, back_rect = draw_board(board, engine, display_popup, popup_text)
+        else:
+            back_rect = draw_board(board, engine)
+
         try:
             # get message from server regarding game state
             server_state = communicate_server(n)
@@ -381,7 +410,10 @@ def play_multiplayer(clock):
             # game is over, return to select menu
             elif is_game_over(engine):
                 display_popup = True
-                popup_text = "Game over. Click here to return to menu"
+                if engine.checkmate:
+                    popup_text = "Checkmate. Click here to return to menu"
+                else:
+                    popup_text = "Stalemate. Click here to return to menu"
 
             # What coordinates the mouse is in
             mouse_square = board.get_mouse_square()
@@ -392,6 +424,11 @@ def play_multiplayer(clock):
                     global run
                     run = False
                     return
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if back_rect.collidepoint(pygame.mouse.get_pos()):
+                        n.close()
+                        game_state = SEL_MENU
 
                 # game is going as normal (no popup displayed for error/game over)
                 if not display_popup:
@@ -454,14 +491,6 @@ def play_multiplayer(clock):
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if popup_win.collidepoint(pygame.mouse.get_pos()):
                             game_state = SEL_MENU
-                        # if mouse coordinates is on "go back to menu" button:
-                        # game_state = SEL_MENU
-
-            # render display
-            if display_popup:
-                popup_win = draw_board(board, engine, display_popup, popup_text)
-            else:
-                draw_board(board, engine)
 
         # error occurred, return to select menu
         except:
