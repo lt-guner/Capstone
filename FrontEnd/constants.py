@@ -1,7 +1,7 @@
 FPS = 60
 WIN_NAME = 'Chess'
 WIDTH, HEIGHT = 600, 600
-SIDEBAR_WIDTH = 200
+SIDEBAR_WIDTH = 235
 WINDOW_WIDTH, WINDOW_HEIGHT = WIDTH + SIDEBAR_WIDTH, HEIGHT
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH // COLS
@@ -10,7 +10,7 @@ COORD_FONT_SIZE = 20
 
 RED = (255, 0, 0)
 # WHITE = (255,255,255)
-# BLACK = (0,0,0)
+# BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 DARK_BROWN = (209, 139, 71)
 LIGHT_BROWN = (255, 206, 158)
@@ -32,7 +32,7 @@ BLACK = 'b'
 
 # constants for sockets
 # socket connection parameters
-SERVER = '170.187.152.20'  # change to ip address of where server is run
+SERVER = 'localhost'  # change to ip address of where server is run
 PORT = 5555
 
 # server-to-client messages
@@ -53,3 +53,5 @@ GAME_FULL = 'Connection Terminated. Game is already full.'
 CONN_SUCCESS = 'Connected to server'
 LOST_CONN_RECONN = 'Connection lost... reconnecting'
 RECONN_SUCCESS = 'Reconnection successful'
+
+PIECES = {'P': 'Pawn', 'R': 'Rook', 'N': 'Knight', 'B': 'Bishop', 'Q': 'Queen'}
