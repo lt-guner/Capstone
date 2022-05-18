@@ -258,6 +258,10 @@ def play_singleplayer(clock, difficulty):
     board = Board(player_color)
     ai = ChessAI()
 
+    display_popup = False
+    popup_text = None
+    popup_win = None
+
     # get valid moves to start and move_made to False
     valid_moves = engine.valid_moves()
     move_made = False
@@ -276,69 +280,79 @@ def play_singleplayer(clock, difficulty):
                 run = False
                 return
 
-            # game is not over
-            if not is_game_over(engine):
-                if is_turn(player_color, engine):
-                    # user clicks on the board
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        # second click: placing a selected piece on the board
-                        if board.piece_chosen:
-                            move = Move(board.piece_chosen, mouse_square, engine.board)
-
-                            # make a move if it is a valid move and set move_made to true
-                            if move in valid_moves:
-                                if move.piece_moved[1] == 'P' and abs(move.start_col - move.end_col) == 1 \
-                                        and move.piece_captured is None:
-                                    move = Move(board.piece_chosen, mouse_square, engine.board, castle=False,
-                                                enpassant=True)
-                                elif move.piece_moved[1] == 'K' and abs(move.start_col - move.end_col) == 2:
-                                    move = Move(board.piece_chosen, mouse_square, engine.board, castle=True,
-                                                enpassant=False)
-                                else:
-                                    move = Move(board.piece_chosen, mouse_square, engine.board, castle=False,
-                                                enpassant=False)
-
-                                engine.make_move(move)
-                                move_made = True
-
-                                # store Move object into data buffer to send to server
-                                global make_move
-                                make_move = move
-                            board.piece_chosen = None
-
-                        # first click: selecting a piece to move
-                        else:
-                            row, col = mouse_square
-                            # Won't allow a user to click on empty square
-                            if not engine.is_empty_square(row, col):
-                                board.piece_chosen = mouse_square
-                # AI executes turn
+            elif is_game_over(engine):
+                display_popup = True
+                if engine.get_player_turn() == 'Black' and engine.get_status()[0]:
+                    popup_text = "WHITE WINS!!!!! Click here to return to menu"
+                elif engine.get_player_turn() == 'White' and engine.get_status()[0]:
+                    popup_text = "BLACK WINS!!!!! Click here to return to menu"
                 else:
-                    # AI makes a move
-                    if difficulty == EAS_DIFF:
-                        ai_move = ai.random_ai(valid_moves)
-                    elif difficulty == MED_DIFF:
-                        ai_move = ai.greedy_ai(valid_moves, engine)
+                    popup_text = "STALEMATE!!!!! Click here to return to menu"
+
+            # game is not over
+            if not display_popup:
+                if not is_game_over(engine):
+                    if is_turn(player_color, engine):
+                        # user clicks on the board
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            # second click: placing a selected piece on the board
+                            if board.piece_chosen:
+                                move = Move(board.piece_chosen, mouse_square, engine.board)
+
+                                # make a move if it is a valid move and set move_made to true
+                                if move in valid_moves:
+                                    if move.piece_moved[1] == 'P' and abs(move.start_col - move.end_col) == 1 \
+                                            and move.piece_captured is None:
+                                        move = Move(board.piece_chosen, mouse_square, engine.board, castle=False,
+                                                    enpassant=True)
+                                    elif move.piece_moved[1] == 'K' and abs(move.start_col - move.end_col) == 2:
+                                        move = Move(board.piece_chosen, mouse_square, engine.board, castle=True,
+                                                    enpassant=False)
+                                    else:
+                                        move = Move(board.piece_chosen, mouse_square, engine.board, castle=False,
+                                                    enpassant=False)
+
+                                    engine.make_move(move)
+                                    move_made = True
+
+                                    # store Move object into data buffer to send to server
+                                    global make_move
+                                    make_move = move
+                                board.piece_chosen = None
+
+                            # first click: selecting a piece to move
+                            else:
+                                row, col = mouse_square
+                                # Won't allow a user to click on empty square
+                                if not engine.is_empty_square(row, col):
+                                    board.piece_chosen = mouse_square
+                    # AI executes turn
                     else:
-                        ai_move = ai.negamax_alphabeta_ai(valid_moves, engine)
-                    engine.make_move(ai_move)
-                    move_made = True
+                        # AI makes a move
+                        if difficulty == EAS_DIFF:
+                            ai_move = ai.random_ai(valid_moves)
+                        elif difficulty == MED_DIFF:
+                            ai_move = ai.greedy_ai(valid_moves, engine)
+                        else:
+                            ai_move = ai.negamax_alphabeta_ai(valid_moves, engine)
+                        engine.make_move(ai_move)
+                        move_made = True
 
-                # get the next set of valid moves and reset move_made
-                if move_made:
-                    valid_moves = engine.valid_moves()
-                    move_made = False
+                    # get the next set of valid moves and reset move_made
+                    if move_made:
+                        valid_moves = engine.valid_moves()
+                        move_made = False
 
-            # game is over, prompt user to return to select menu
-            # else:
-            # if event.type == pygame.MOUSEBUTTONDOWN:
-            # if mouse coordinates is on "go back to menu" button:
-            # game_state = SEL_MENU
+            else:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if popup_win.collidepoint(pygame.mouse.get_pos()):
+                        game_state = SEL_MENU
 
-        draw_board(board, engine)
-        # if is_game_over(engine):
-        # draw game over message on UI
-        # draw a "go back to menu" button
+        # render display
+        if display_popup:
+            popup_win = draw_board(board, engine, display_popup, popup_text)
+        else:
+            draw_board(board, engine)
 
 
 def play_multiplayer(clock):
@@ -381,7 +395,12 @@ def play_multiplayer(clock):
             # game is over, return to select menu
             elif is_game_over(engine):
                 display_popup = True
-                popup_text = "Game over. Click here to return to menu"
+                if engine.get_player_turn() == 'Black' and engine.get_status()[0]:
+                    popup_text = "WHITE WINS!!!!! Click here to return to menu"
+                elif engine.get_player_turn() == 'White' and engine.get_status()[0]:
+                    popup_text = "BLACK WINS!!!!! Click here to return to menu"
+                else:
+                    popup_text = "STALEMATE!!!!! Click here to return to menu"
 
             # What coordinates the mouse is in
             mouse_square = board.get_mouse_square()
