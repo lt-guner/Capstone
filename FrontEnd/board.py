@@ -89,16 +89,27 @@ class Board:
         if self.piece_chosen is not None:
             # Transforming the coordinates for player view
             vrow, vcol = self.virt_coords(*self.piece_chosen)
-            if (engine.get_board()[vrow][vcol][0] == 'w' and engine.get_player_turn() == 'White') or \
-                    (engine.get_board()[vrow][vcol][0] == 'b' and engine.get_player_turn() == 'Black'):
-                highlight = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
-                highlight.set_alpha(150)
-                highlight.fill(pygame.Color('green'))
-                win.blit(highlight, (vcol*SQUARE_SIZE, vrow*SQUARE_SIZE))
-                highlight.fill(pygame.Color('yellow'))
-                for move in moves:
-                    if move.start_row == vrow and move.start_col == vcol:
-                        win.blit(highlight, (move.end_col * SQUARE_SIZE, move.end_row * SQUARE_SIZE))
+            if engine.get_board()[vrow][vcol] is not None and engine.white_turn:
+                if engine.get_board()[vrow][vcol][0] == 'w':
+                    highlight = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
+                    highlight.set_alpha(150)
+                    highlight.fill(pygame.Color('green'))
+                    win.blit(highlight, (vcol * SQUARE_SIZE, vrow * SQUARE_SIZE))
+                    highlight.fill(pygame.Color('yellow'))
+                    for move in moves:
+                        if move.start_row == vrow and move.start_col == vcol:
+                            win.blit(highlight, (move.end_col * SQUARE_SIZE, move.end_row * SQUARE_SIZE))
+            elif engine.get_board()[ROWS - vrow - 1][COLS - vcol - 1] is not None and not engine.white_turn:
+                if engine.get_board()[ROWS - vrow - 1][COLS - vcol - 1][0] == 'b':
+                    highlight = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
+                    highlight.set_alpha(150)
+                    highlight.fill(pygame.Color('green'))
+                    win.blit(highlight, (vcol * SQUARE_SIZE, vrow * SQUARE_SIZE))
+                    highlight.fill(pygame.Color('yellow'))
+                    for move in moves:
+                        if move.start_row == ROWS - vrow - 1 and move.start_col == COLS - vcol - 1:
+                            win.blit(highlight, ((COLS - move.end_col - 1) * SQUARE_SIZE, (ROWS - move.end_row - 1)
+                                                 * SQUARE_SIZE))
 
     def draw_sidebar(self, win, engine):
         """Draws the sidebar and content"""
@@ -142,7 +153,7 @@ class Board:
         win.blit(n_text, (WIDTH + 5, 310))
 
         # Draw Move Log
-        move_display_count = 10 #Number of moves to show
+        move_display_count = 10  # Number of moves to show
         move_log_line_start = 365
 
         # Draw Header
@@ -153,17 +164,18 @@ class Board:
         for i in range(move_display_count):
             if len(move_log) > i:
                 last_move = move_log[-i-1]
-                #Figure out which piece was moved
+                # Figure out which piece was moved
                 piece_moved = last_move.get_piece_moved()
                 piece_type = piece_moved[1]
-                #Figure out which player moved it
+                # Figure out which player moved it
                 player_moved = "Black" if piece_moved[0]== "b" else "White"
-                #Figure out start and end positions
+                # Figure out start and end positions
                 move_str = last_move.get_chess_notation()
                 pos_1 = move_str[0:2]
                 pos_2 = move_str[2:4]
-                #Draw move line
-                n_text = self.font.render("{}: {} {} {} -> {}".format(len(move_log) - i, player_moved, piece_type, pos_1, pos_2), True, WHITEISH)
+                # Draw move line
+                n_text = self.font.render("{}: {} {} {} -> {}".format(len(move_log) - i, player_moved, piece_type, 
+                                                                      pos_1, pos_2), True, WHITEISH)
                 win.blit(n_text, (WIDTH + 25, move_log_line_start))
                 move_log_line_start += 20
             else:

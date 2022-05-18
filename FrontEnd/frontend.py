@@ -289,10 +289,12 @@ def play_singleplayer(clock, difficulty):
         # game is over, return to select menu
         if is_game_over(engine):
             display_popup = True
-            if engine.checkmate:
-                popup_text = "Checkmate. Click here to return to menu"
+            if engine.get_player_turn() == 'Black' and engine.get_status()[0]:
+                popup_text = "WHITE WINS!!!!! Click here to return to menu"
+            elif engine.get_player_turn() == 'White' and engine.get_status()[0]:
+                popup_text = "BLACK WINS!!!!! Click here to return to menu"
             else:
-                popup_text = "Stalemate. Click here to return to menu"
+                popup_text = "STALEMATE!!!!! Click here to return to menu"
 
         for event in pygame.event.get():
             # Allows the user to quit the game when they hit the exit button
@@ -364,6 +366,7 @@ def play_singleplayer(clock, difficulty):
                     if popup_win.collidepoint(pygame.mouse.get_pos()):
                         game_state = SEL_MENU
 
+
 def play_multiplayer(clock):
     """
     Executes a game of chess against another player online
@@ -410,10 +413,12 @@ def play_multiplayer(clock):
             # game is over, return to select menu
             elif is_game_over(engine):
                 display_popup = True
-                if engine.checkmate:
-                    popup_text = "Checkmate. Click here to return to menu"
+                if engine.get_player_turn() == 'Black' and engine.get_status()[0]:
+                    popup_text = "WHITE WINS!!!!! Click here to return to menu"
+                elif engine.get_player_turn() == 'White' and engine.get_status()[0]:
+                    popup_text = "BLACK WINS!!!!! Click here to return to menu"
                 else:
-                    popup_text = "Stalemate. Click here to return to menu"
+                    popup_text = "STALEMATE!!!!! Click here to return to menu"
 
             # What coordinates the mouse is in
             mouse_square = board.get_mouse_square()
