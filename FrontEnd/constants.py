@@ -1,7 +1,7 @@
 FPS = 60
 WIN_NAME = 'Chess'
 WIDTH, HEIGHT = 600, 600
-SIDEBAR_WIDTH = 200
+SIDEBAR_WIDTH = 235
 WINDOW_WIDTH, WINDOW_HEIGHT = WIDTH + SIDEBAR_WIDTH, HEIGHT
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH // COLS
@@ -32,7 +32,7 @@ BLACK = 'b'
 
 # constants for sockets
 # socket connection parameters
-SERVER = '170.187.152.20'  # change to ip address of where server is run
+SERVER = 'localhost'  # change to ip address of where server is run
 PORT = 5555
 
 # server-to-client messages

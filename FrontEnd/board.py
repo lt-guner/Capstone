@@ -9,7 +9,7 @@ PIECE_OFFSET = (SQUARE_SIZE - PIECE_IMG_SIZE) / 2
 class Board:
     """Creates the board as well as controls resources needed to draw the board on the screen."""
 
-    # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - 
+    # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) -
     # Drawing the Board: (2020).
     # Accessed: April 10, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=vnd3RfeG3NM
     def __init__(self, player_color):
@@ -22,8 +22,8 @@ class Board:
 
     # Flips the board for the black player
     def virt_coords(self, row, col):
-        """Depending on which player the board is being viewed by, the direction of the board must be turned 
-           appropriately. This function transfroms the board coordinates into a virtual coordinate for drawing the 
+        """Depending on which player the board is being viewed by, the direction of the board must be turned
+           appropriately. This function transfroms the board coordinates into a virtual coordinate for drawing the
            correct orientation."""
         if self.player_color == WHITE:
             return row, col
@@ -32,7 +32,7 @@ class Board:
 
     def draw_squares(self, win):
         """Draws squares on the board"""
-        # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - Drawing 
+        # Citation for code to render the board: Tech With Tim, U.S., Python/Pygame Checkers Tutorial (Part 1) - Drawing
         # the Board: (2020).
         # Accessed: April 10, 2022. [Online Video]. Available: https://www.youtube.com/watch?v=vnd3RfeG3NM
         win.fill(DARK_BROWN)
@@ -41,7 +41,7 @@ class Board:
                 pygame.draw.rect(win, LIGHT_BROWN, (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def draw_coords(self, win):
-        """Draws the coordinates labels on the board. These are flipped depending on which player is viewing 
+        """Draws the coordinates labels on the board. These are flipped depending on which player is viewing
            the board."""
         # Determine Coord order
         if self.player_color == WHITE:
@@ -140,3 +140,31 @@ class Board:
 
         n_text = self.font.render("Number of Turns: {turns}".format(turns=len(engine.get_move_log())), True, WHITEISH)
         win.blit(n_text, (WIDTH + 5, 310))
+
+        # Draw Move Log
+        move_display_count = 10 #Number of moves to show
+        move_log_line_start = 365
+
+        # Draw Header
+        n_text = self.font.render("Latest moves:", True, WHITEISH)
+        win.blit(n_text, (WIDTH + 5, 345))
+
+        move_log = engine.move_log
+        for i in range(move_display_count):
+            if len(move_log) > i:
+                last_move = move_log[-i-1]
+                #Figure out which piece was moved
+                piece_moved = last_move.get_piece_moved()
+                piece_type = piece_moved[1]
+                #Figure out which player moved it
+                player_moved = "Black" if piece_moved[0]== "b" else "White"
+                #Figure out start and end positions
+                move_str = last_move.get_chess_notation()
+                pos_1 = move_str[0:2]
+                pos_2 = move_str[2:4]
+                #Draw move line
+                n_text = self.font.render("{}: {} {} {} -> {}".format(len(move_log) - i, player_moved, piece_type, pos_1, pos_2), True, WHITEISH)
+                win.blit(n_text, (WIDTH + 25, move_log_line_start))
+                move_log_line_start += 20
+            else:
+                break

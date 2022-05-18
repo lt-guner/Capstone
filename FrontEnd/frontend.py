@@ -167,7 +167,7 @@ def draw_sel_menu(clock):
 
         font = pygame.font.SysFont('Arial', 30, bold=True)
 
-        WIN.fill(LIGHT_BROWN)  # blanks out the screen. can replace with a background image
+        WIN.fill((255, 255, 255))  # blanks out the screen. can replace with a background image
 
         # load the background
         background_chess = pygame.image.load('./FrontEnd/Assets/chessbackground.jpg')
@@ -297,7 +297,7 @@ def play_singleplayer(clock, difficulty):
                                 else:
                                     move = Move(board.piece_chosen, mouse_square, engine.board, castle=False,
                                                 enpassant=False)
-                                
+
                                 engine.make_move(move)
                                 move_made = True
 
@@ -323,7 +323,7 @@ def play_singleplayer(clock, difficulty):
                         ai_move = ai.negamax_alphabeta_ai(valid_moves, engine)
                     engine.make_move(ai_move)
                     move_made = True
-                    
+
                 # get the next set of valid moves and reset move_made
                 if move_made:
                     valid_moves = engine.valid_moves()
