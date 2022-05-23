@@ -410,16 +410,16 @@ class ChessEngine:
 
             # if white rook was captured at its starting position, then update castling rights accordingly
             if self.move_log[i].piece_captured == 'wR':
-                if self.move_log[i].end_row == 7 and self.move_log[i] == 0:
+                if self.move_log[i].end_row == 7 and self.move_log[i].end_col == 0:
                     wqs = False
-                elif self.move_log[i].end_row == 7 and self.move_log[i] == 7:
+                elif self.move_log[i].end_row == 7 and self.move_log[i].end_col == 7:
                     wks = False
 
             # same thing for black
             if self.move_log[i].piece_captured == 'bR':
-                if self.move_log[i].end_row == 0 and self.move_log[i] == 0:
+                if self.move_log[i].end_row == 0 and self.move_log[i].end_col == 0:
                     bqs = False
-                elif self.move_log[i].end_row == 0 and self.move_log[i] == 7:
+                elif self.move_log[i].end_row == 0 and self.move_log[i].end_col == 7:
                     bks = False
 
         return [wks, bks, wqs, bqs]
