@@ -103,6 +103,7 @@ def threaded_client(conn, playerNum):
     if playerCount == 0:
         print("---Ending game---")
         game_start = False
+        print("---Waiting for new connections---")
 
 
 # index 0: white player, index 1: black player
