@@ -1,5 +1,6 @@
 from Chess.move import Move
 from Chess.constants import *
+import copy
 
 
 class ChessEngine:
@@ -40,6 +41,9 @@ class ChessEngine:
         # keep track of check mate and stalemate
         self.checkmate = False
         self.stalemate = False
+
+        # board state dictionary for stalemate
+        self.board_state = {}
 
     def make_move(self, move: Move):
         """
@@ -92,6 +96,12 @@ class ChessEngine:
         # append the current enpassant coords to the log
         self.enpassant_log.append(self.enpassant_coords)
 
+        # add the current board state to the dictionary by replacing none to --, join into string, and adding it as key
+        board_copy = copy.deepcopy(self.board)
+        remove_none_list = [['--' if square is None else square for square in row] for row in board_copy]
+        board_string = ''.join([square for innerlist in remove_none_list for square in innerlist])
+        self.board_state[board_string] = self.board_state.get(board_string, 0) + 1
+
     def undo_move(self):
         """
         Undoes the last move
@@ -105,6 +115,14 @@ class ChessEngine:
             self.legible_move_list.pop()
             if undone_move.piece_captured is not None:
                 self.pieces_captured.pop()
+
+            # remove the current board state to the dictionary by replacing none to --, join into string, subtract 1
+            board_copy = copy.deepcopy(self.board)
+            remove_none_list = [['--' if square is None else square for square in row] for row in board_copy]
+            board_string = ''.join([square for innerlist in remove_none_list for square in innerlist])
+            self.board_state[board_string] = self.board_state.get(board_string, 0) - 1
+            if self.board_state[board_string] == 0:
+                self.board_state.pop(board_string)
 
             # undo the piece locations
             self.board[undone_move.start_row][undone_move.start_col] = undone_move.piece_moved
@@ -182,6 +200,19 @@ class ChessEngine:
             # else its stalemate
             else:
                 self.stalemate = True
+
+        # threefold repetition
+        if 3 in self.board_state.values() and self.stalemate is False:
+            self.stalemate = True
+
+        # not enough firepower which is kings only
+        if self.stalemate is False:
+            stalemate_check = True
+            for i in range(len(self.board)):
+                if any(piece in self.board[i] for piece in BOARD_PIECE):
+                    stalemate_check = False
+                    break
+            self.stalemate = stalemate_check
 
         # restore the current enpassant
         self.enpassant_coords = temp_enpassant
@@ -410,16 +441,16 @@ class ChessEngine:
 
             # if white rook was captured at its starting position, then update castling rights accordingly
             if self.move_log[i].piece_captured == 'wR':
-                if self.move_log[i].end_row == 7 and self.move_log[i] == 0:
+                if self.move_log[i].end_row == 7 and self.move_log[i].end_col == 0:
                     wqs = False
-                elif self.move_log[i].end_row == 7 and self.move_log[i] == 7:
+                elif self.move_log[i].end_row == 7 and self.move_log[i].end_col == 7:
                     wks = False
 
             # same thing for black
             if self.move_log[i].piece_captured == 'bR':
-                if self.move_log[i].end_row == 0 and self.move_log[i] == 0:
+                if self.move_log[i].end_row == 0 and self.move_log[i].end_col == 0:
                     bqs = False
-                elif self.move_log[i].end_row == 0 and self.move_log[i] == 7:
+                elif self.move_log[i].end_row == 0 and self.move_log[i].end_col == 7:
                     bks = False
 
         return [wks, bks, wqs, bqs]
@@ -487,7 +518,7 @@ class ChessEngine:
 
     def get_king_location(self):
         """
-        returns the location of both kings 
+        returns the location of both kings
         """
         return (self.white_king_loc, self.black_king_loc)
 
