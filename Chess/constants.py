@@ -117,6 +117,8 @@ PIECE_POSITIONAL_SCORE = {
     'bQ': BLACK_QUEEN_POS,
 }
 
+BOARD_PIECE = ['wP', 'wR', 'wN', 'wB', 'wQ', 'bP', 'bR', 'bN', 'bB', 'bQ']
+
 
 def is_in_bounds(row, col):
     """

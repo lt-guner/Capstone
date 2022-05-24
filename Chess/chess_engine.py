@@ -202,8 +202,17 @@ class ChessEngine:
                 self.stalemate = True
 
         # threefold repetition
-        if 3 in self.board_state.values():
+        if 3 in self.board_state.values() and self.stalemate is False:
             self.stalemate = True
+
+        # not enough firepower which is kings only
+        if self.stalemate is False:
+            stalemate_check = True
+            for i in range(len(self.board)):
+                if any(piece in self.board[i] for piece in BOARD_PIECE):
+                    stalemate_check = False
+                    break
+            self.stalemate = stalemate_check
 
         # restore the current enpassant
         self.enpassant_coords = temp_enpassant
