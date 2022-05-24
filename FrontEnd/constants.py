@@ -32,6 +32,7 @@ BLACK = 'b'
 
 # constants for sockets
 # socket connection parameters
+# SERVER = 'localhost'
 SERVER = '170.187.152.20'  # change to ip address of where server is run
 PORT = 5555
 
